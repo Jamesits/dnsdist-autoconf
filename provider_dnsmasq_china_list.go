@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -35,6 +36,8 @@ func DnsmasqChinaList(c map[string]interface{}, o io.Writer) {
 	generateServerPool(poolName, servers, o)
 
 	for _, url := range localDomainListUrls {
+		log.Printf("Downloading rule %s...\n", url)
+
 		resp, err := http.Get(url)
 		check(err)
 		defer resp.Body.Close()
@@ -44,6 +47,8 @@ func DnsmasqChinaList(c map[string]interface{}, o io.Writer) {
 		check(err)
 
 		generateActions(poolName, domains, c["action"].(string), o)
+
+		log.Printf("Generated %d rules\n", len(domains))
 	}
 }
 

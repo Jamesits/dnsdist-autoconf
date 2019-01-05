@@ -17,22 +17,20 @@ func init() {
 }
 
 func main() {
+	var err error
 	var configPath = flag.String("config", "config.toml", "config file")
 	var outputPath = flag.String("output", "-", "output file")
 	flag.Parse()
 
-	var outputFile *os.File
+	var outputFile = os.Stdout
 	if *outputPath != "-" {
-		f, err := os.Create(*outputPath)
+		outputFile, err = os.Create(*outputPath)
 		check(err)
-		outputFile = f
 		defer outputFile.Close()
-	} else {
-		outputFile = os.Stdout
 	}
 
 	conf := &config{}
-	_, err := toml.DecodeFile(*configPath, conf)
+	_, err = toml.DecodeFile(*configPath, conf)
 	check(err)
 
 	// default
@@ -53,18 +51,29 @@ func main() {
 	_, err = fmt.Fprintf(outputFile, "%s %s\n", OutputCommentPrefix, appUrl)
 	check(err)
 
+	// time
+	_, err = fmt.Fprintf(outputFile, "%s generated at %s\n", OutputCommentPrefix, time.Now().Format("2006-01-02 15:04:05"))
+	check(err)
+
 	_, err = fmt.Fprint(outputFile, globalConfigPrependString)
 	check(err)
 
 	// control socket
 	if len(conf.ControlSocketListen) > 0 {
-		_, err = fmt.Fprintf(outputFile, "controlSocket(\"%s\")\nsetKey(\"%s\")\n", conf.ControlSocketListen, conf.ControlSocketKey)
+		_, err = fmt.Fprintf(outputFile, `
+-- control socket
+controlSocket(\"%s\")
+setKey(\"%s\")
+`, conf.ControlSocketListen, conf.ControlSocketKey)
 		check(err)
 	}
 
 	// web server
 	if len(conf.WebServerListen) > 0 {
-		_, err = fmt.Fprintf(outputFile, "webserver(\"%s\", \"%s\")\n", conf.WebServerListen, conf.WebServerPassword)
+		_, err = fmt.Fprintf(outputFile, `
+-- web server
+webserver(\"%s\", \"%s\")
+`, conf.WebServerListen, conf.WebServerPassword)
 		check(err)
 	}
 
@@ -76,9 +85,11 @@ func main() {
 
 	// ECS https://dnsdist.org/advanced/ecs.html
 	if conf.ECS {
-		_, err = fmt.Fprintf(outputFile, `%s EDNS0 Client Subnet
+		_, err = fmt.Fprintf(outputFile, `
+%s EDNS0 Client Subnet
 setECSSourcePrefixV4(%d)
-setECSSourcePrefixV6(%d)\n`,
+setECSSourcePrefixV6(%d)
+`,
 			OutputCommentPrefix,
 			conf.DefaultEcsPrefixV4,
 			conf.DefaultEcsPrefixV6,
@@ -87,6 +98,8 @@ setECSSourcePrefixV6(%d)\n`,
 	}
 
 	// default DNS servers
+	_, err = fmt.Fprintf(outputFile, "%s default upstream\n", OutputCommentPrefix)
+	check(err)
 	for _, addr := range conf.Upstreams {
 		_, err = fmt.Fprintf(outputFile, "newServer(\"%s\")\n", addr)
 		check(err)
