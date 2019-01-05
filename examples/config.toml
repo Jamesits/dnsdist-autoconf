@@ -1,0 +1,71 @@
+# basic config
+
+listen = [
+    "0.0.0.0:53",
+    "[::]:53",
+]
+upstreams = [
+    "101.6.6.6:53",
+    "202.141.162.123:53",
+]
+control_socket = "0.0.0.0"
+control_socket_key = ""
+webserver = "0.0.0.0:8083"
+webserver_password = "passw0rd"
+enable_ecs = true
+default_ecs_prefix_v4 = 24
+default_ecs_prefix_v6 = 48
+
+# you can include unlimited [[match]] blocks
+# but do not duplicate the same config
+
+# example: drop requests to certain domain
+[[match]]
+domains = [
+    "music.httpdns.c.163.com",
+]
+# note: "action" works in every [[match]] block. The default value is "resolve".
+action = "block"
+
+# example: resolve certain domain using other servers
+[[match]]
+domains = [
+    "music.126.net",
+    "music.126.net.gccdn.net",
+    "music.126.net.usgcac.cdnetworks.net",
+    "music.126.net.wscdns.com",
+    "music.163.com",
+    "netease.ugcvideoss.ourdvs.com",
+]
+upstreams = [
+    "223.5.5.5:53",
+    "223.6.6.6:53",
+]
+
+# example: get a China-mainland-specific domain list from https://github.com/felixonmars/dnsmasq-china-list
+# so we can get CDN acceleration
+[[match]]
+provider = "dnsmasq-china-list"
+upstreams = [
+    "223.5.5.5:53",
+    "223.6.6.6:53",
+]
+
+# example: forward certain domain to its domain controllers in an Active Directory setup
+# Note: we can only get DCs from DNS information, so here we assume every DC have DNS roles installed
+# If you have an explicit list of DNS server IPs, use the example above
+[[match]]
+provider = "ActiveDirectory"
+primary_domain = "corp.contoso.com"
+# Alternative UPNs and rDNSs, if needed
+domains = [
+    "corp.contoso2.com",
+    "corp.contoso3.com",
+]
+# set explicit bootstrap server for querying DCs, otherwise we will use OS default DNS serer
+bootstrap_server = "172.19.1.9"
+
+# example: a minimal Active Directory setup
+[[match]]
+provider = "ActiveDirectory"
+primary_domain = "corp.contoso.com"
