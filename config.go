@@ -1,6 +1,7 @@
 package main
 
 type config struct {
+	QuitOnError         bool                     `toml:"quit_on_error"`
 	Listen              []string                 `toml:"listen"`
 	Upstreams           []string                 `toml:"upstreams"`
 	ECS                 bool                     `toml:"enable_ecs"`

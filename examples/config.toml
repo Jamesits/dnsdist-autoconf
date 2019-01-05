@@ -1,5 +1,8 @@
 # basic config
 
+# if an error is encountered, stop
+QuitOnError = false
+
 listen = [
     "0.0.0.0:53",
     "[::]:53",

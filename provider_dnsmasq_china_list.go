@@ -39,7 +39,11 @@ func DnsmasqChinaList(c map[string]interface{}, o io.Writer) {
 		log.Printf("Downloading rule %s...\n", url)
 
 		resp, err := http.Get(url)
-		check(err)
+		// currently if download fail then go on
+		// TODO: retry
+		if softFail(err) != nil {
+			continue
+		}
 		defer resp.Body.Close()
 
 		domains := generateDomainListFromDnsmasqConfig(resp.Body)

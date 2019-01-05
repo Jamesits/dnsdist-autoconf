@@ -26,7 +26,9 @@ func ActiveDirectory(c map[string]interface{}, o io.Writer) {
 	// gather a list of DCs
 	// TODO: set current site name in config so we can query current site first
 	_, records, err := resolver.LookupSRV(ctx, "ldap", "tcp", primaryDomain)
-	check(err)
+	if softFail(err) != nil {
+		return
+	}
 
 	var servers []DnsServer
 
@@ -35,7 +37,9 @@ func ActiveDirectory(c map[string]interface{}, o io.Writer) {
 	for _, record := range records {
 		// get IPs via address
 		addresses, err := resolver.LookupHost(ctx, record.Target)
-		check(err)
+		if softFail(err) != nil {
+			return
+		}
 		log.Printf("Address: %s (%s, total %d), Priority: %d, Weight: %d\n", record.Target, addresses[0], len(addresses), record.Priority, record.Weight)
 		for _, address := range addresses {
 			name := fmt.Sprintf("%s (%s)", record.Target, address)

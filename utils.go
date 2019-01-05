@@ -23,13 +23,6 @@ type DnsServer struct {
 	name    string // for display purpose
 }
 
-// check every fucking err
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
 // code from: https://stackoverflow.com/a/13906031
 func IsZeroOfUnderlyingType(x interface{}) bool {
 	return reflect.DeepEqual(x, reflect.Zero(reflect.TypeOf(x)).Interface())
