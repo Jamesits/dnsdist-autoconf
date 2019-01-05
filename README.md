@@ -2,6 +2,8 @@
 
 Simple [dnsdist](https://dnsdist.org) config generator made for human.
 
+Prebuilt binaries might be found in [releases](https://github.com/Jamesits/dnsdist-autoconf/releases) or from the CI below.
+
 [![Build Status](https://dev.azure.com/nekomimiswitch/General/_apis/build/status/dnsdist-autoconf?branchName=master)](https://dev.azure.com/nekomimiswitch/General/_build/latest?definitionId=39?branchName=master)
 
 ## Features
@@ -19,7 +21,15 @@ dnsdist-autoconf -config config.toml -output dnsdist.conf
 dnsdist -C dnsdist.conf
 ```
 
+## Building
+
+Use Go 1.11 or higher.
+
 ## Caveats
+
+### Active Directory
+
+We make a simple assumption that every DC have DNS roles installed, since we can only get LDAP/Kerberos server list from DNS queries, and quering any other config requires much more complex protocols. 
 
 ### ulimit
 
@@ -33,9 +43,9 @@ You can increase this value by using LimitNOFILE= in the systemd unit file or ul
 Quick fix if you are running directly in a shell:
 
 ```shell
-sudo su
-# ulimit -u unlimited
-# dnsdist -C dnsdist.conf
+# you might need root privilege
+ulimit -u unlimited
+dnsdist -C dnsdist.conf
 ```
 
 Fix if you are running in systemd:
