@@ -72,7 +72,7 @@ func ActiveDirectory(c map[string]interface{}, o io.Writer) {
 		}
 		log.Printf("Address: %s (%s, total %d), Priority: %d, Weight: %d\n", record.Target, addresses[0], len(addresses), record.Priority, record.Weight)
 		for _, address := range addresses {
-			name := fmt.Sprintf("%s (%s)", record.Target, address)
+			name := record.Target
 
 			var addressWithPort string
 			if strings.Contains(address, ":") {
