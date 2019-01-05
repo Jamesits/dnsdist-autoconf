@@ -17,7 +17,11 @@ Prebuilt binaries might be found in [releases](https://github.com/Jamesits/dnsdi
 An example config file is at [examples/config.toml](examples/config.toml).
 
 ```shell
+# generate the config
 dnsdist-autoconf -config config.toml -output dnsdist.conf
+# check the config grammar
+dnsdist -C dnsdist.conf --check-config
+# run it!
 dnsdist -C dnsdist.conf
 ```
 
