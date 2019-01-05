@@ -12,7 +12,7 @@ Simple [dnsdist](https://dnsdist.org) config generator made for human.
 
 ## Usage
 
-An example config file is at [example/config.toml](example/config.toml).
+An example config file is at [examples/config.toml](examples/config.toml).
 
 ```shell
 dnsdist-autoconf -config config.toml -output dnsdist.conf
