@@ -7,6 +7,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"log"
 	"os"
+	"strings"
 )
 
 func check(e error) {
@@ -46,17 +47,30 @@ func main() {
 			m["provider"] = "DomainList"
 		}
 
-		log.Printf("Processing match #%d, type %s", index+1, m["provider"])
-
 		var o bytes.Buffer
-		providers[m["provider"].(string)](m, &o)
 
-		_, err = fmt.Fprintf(outputFile, "%s match #%d [%s]\n", OutputCommentPrefix, index+1, m["provider"])
-		check(err)
+		// find the appropriate provider
+		providerName := strings.ToLower(m["provider"].(string))
+		found := false
+		for key, value := range providers {
+			if strings.ToLower(key) == providerName {
+				// got a match
+				log.Printf("Processing match #%d, type %s", index+1, key)
+				found = true
+				value(m, &o)
+				_, err = fmt.Fprintf(outputFile, "%s match #%d [%s]\n", OutputCommentPrefix, index+1, m["provider"])
+				check(err)
+				_, err = outputFile.WriteString(o.String())
+				check(err)
+				_, err = fmt.Fprintf(outputFile, "\n%s end match #%d\n", OutputCommentPrefix, index+1)
+				check(err)
+				break
+			}
+		}
 
-		_, err = outputFile.WriteString(o.String())
-		check(err)
+		if !found {
+			log.Fatalf("Unknown provider %s at match #%d", m["provider"], index+1)
+		}
 
-		_, err = fmt.Fprintf(outputFile, "\n%s end match #%d\n", OutputCommentPrefix, index+1)
 	}
 }
