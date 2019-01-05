@@ -62,8 +62,8 @@ domains = [
     "corp.contoso2.com",
     "corp.contoso3.com",
 ]
-# set explicit bootstrap server for querying DCs, otherwise we will use OS default DNS serer
-bootstrap_server = "172.19.1.9"
+# set explicit bootstrap server+port for querying DCs, otherwise we will use OS default DNS serer
+bootstrap_server = "192.168.1.1:53"
 
 # example: a minimal Active Directory setup
 [[match]]
