@@ -106,7 +106,7 @@ setECSSourcePrefixV6(%d)
 	}
 
 	// disable RFC2136 DNS update
-	if conf.AllowDDNSUpdates {
+	if !conf.AllowDDNSUpdates {
 		_, err = fmt.Fprintf(outputFile, `
 %s disallow RFC2136 DNS update
 addAction(OpcodeRule(DNSOpcode.Update), RCodeAction(dnsdist.REFUSED))
