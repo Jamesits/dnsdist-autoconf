@@ -1,14 +1,15 @@
 package main
 
 type config struct {
-	QuitOnError      bool                     `toml:"quit_on_error"`
-	Listen           []string                 `toml:"listen"`
-	Upstreams        []string                 `toml:"upstreams"`
-	ECS              ecs                      `toml:"ecs"`
-	ControlSocket    controlSocket            `toml:"control_socket"`
-	WebServer        webServer                `toml:"web_server"`
-	AllowDDNSUpdates bool                     `toml:"allow_ddns_updates"`
-	Matches          []map[string]interface{} `toml:"match"`
+	QuitOnError          bool                     `toml:"quit_on_error"`
+	Listen               []string                 `toml:"listen"`
+	Upstreams            []string                 `toml:"upstreams"`
+	AllowedClientSubnets []string                 `toml:"allowed_client_subnets"`
+	AllowDDNSUpdates     bool                     `toml:"allow_ddns_updates"`
+	ECS                  ecs                      `toml:"ecs"`
+	ControlSocket        controlSocket            `toml:"control_socket"`
+	WebServer            webServer                `toml:"web_server"`
+	Matches              []map[string]interface{} `toml:"match"`
 }
 
 type ecs struct {

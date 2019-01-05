@@ -69,28 +69,46 @@ func main() {
 
 	// control socket
 	if len(conf.ControlSocket.Listen) > 0 {
-		_, err = fmt.Fprintf(outputFile, `
--- control socket
-controlSocket("%s")
-setKey("%s")
-`, conf.ControlSocket.Listen, conf.ControlSocket.Key)
+		_, err = fmt.Fprintf(outputFile, "%s control socket\ncontrolSocket(\"%s\")\nsetKey(\"%s\")\n",
+			OutputCommentPrefix,
+			conf.ControlSocket.Listen,
+			conf.ControlSocket.Key,
+		)
 		check(err)
 	}
 
 	// web server
 	if len(conf.WebServer.Listen) > 0 {
-		_, err = fmt.Fprintf(outputFile, `
--- web server
-webserver("%s", "%s", "%s")
-`, conf.WebServer.Listen, conf.WebServer.Password, conf.WebServer.ApiKey)
+		_, err = fmt.Fprintf(outputFile, "\n%s Web server\nwebserver(\"%s\", \"%s\", \"%s\")\n",
+			OutputCommentPrefix,
+			conf.WebServer.Listen,
+			conf.WebServer.Password,
+			conf.WebServer.ApiKey,
+		)
 		check(err)
 	}
 
 	// listen
+	_, err = fmt.Fprintf(outputFile, "\n%s Listen\n", OutputCommentPrefix)
+	check(err)
 	for _, addr := range conf.Listen {
 		_, err = fmt.Fprintf(outputFile, "addLocal(\"%s\")\n", addr)
 		check(err)
 	}
+
+	// ACL
+	_, err = fmt.Fprintf(outputFile, "\n%s ACL\nsetACL({\n", OutputCommentPrefix)
+	check(err)
+	for index, addr := range conf.AllowedClientSubnets {
+		if index > 0 {
+			_, err = fmt.Fprint(outputFile, ", \n")
+			check(err)
+		}
+		_, err = fmt.Fprintf(outputFile, "    \"%s\"", addr)
+		check(err)
+	}
+	_, err = fmt.Fprint(outputFile, "\n})\n")
+	check(err)
 
 	// ECS https://dnsdist.org/advanced/ecs.html
 	if conf.ECS.Enabled {
@@ -107,7 +125,7 @@ setECSSourcePrefixV6(%d)
 	}
 
 	// default DNS servers
-	_, err = fmt.Fprintf(outputFile, "%s default upstream\n", OutputCommentPrefix)
+	_, err = fmt.Fprintf(outputFile, "\n%s default upstream\n", OutputCommentPrefix)
 	check(err)
 	for _, addr := range conf.Upstreams {
 		_, err = fmt.Fprintf(outputFile, "newServer(\"%s\")\n", addr)
