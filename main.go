@@ -33,18 +33,23 @@ func main() {
 	}
 
 	conf = &config{}
-	_, err = toml.DecodeFile(*configPath, conf)
+	metaData, err := toml.DecodeFile(*configPath, conf)
 	check(err)
+
+	// print unknown configs
+	for _, key := range metaData.Undecoded() {
+		log.Printf("Warning: unknown option %q", key.String())
+	}
 
 	// normalize config and insert default value
 	if len(conf.Listen) == 0 {
 		conf.Listen = []string{"127.0.0.1:53", "[::1]:53"}
 	}
-	if conf.DefaultEcsPrefixV4 == 0 {
-		conf.DefaultEcsPrefixV4 = 24
+	if conf.ECS.DefaultPrefixV4 == 0 {
+		conf.ECS.DefaultPrefixV4 = 24
 	}
-	if conf.DefaultEcsPrefixV6 == 0 {
-		conf.DefaultEcsPrefixV6 = 48
+	if conf.ECS.DefaultPrefixV6 == 0 {
+		conf.ECS.DefaultPrefixV6 = 48
 	}
 
 	// program identity
@@ -63,21 +68,21 @@ func main() {
 	check(err)
 
 	// control socket
-	if len(conf.ControlSocketListen) > 0 {
+	if len(conf.ControlSocket.Listen) > 0 {
 		_, err = fmt.Fprintf(outputFile, `
 -- control socket
 controlSocket("%s")
 setKey("%s")
-`, conf.ControlSocketListen, conf.ControlSocketKey)
+`, conf.ControlSocket.Listen, conf.ControlSocket.Key)
 		check(err)
 	}
 
 	// web server
-	if len(conf.WebServerListen) > 0 {
+	if len(conf.WebServer.Listen) > 0 {
 		_, err = fmt.Fprintf(outputFile, `
 -- web server
-webserver("%s", "%s")
-`, conf.WebServerListen, conf.WebServerPassword)
+webserver("%s", "%s", "%s")
+`, conf.WebServer.Listen, conf.WebServer.Password, conf.WebServer.ApiKey)
 		check(err)
 	}
 
@@ -88,15 +93,15 @@ webserver("%s", "%s")
 	}
 
 	// ECS https://dnsdist.org/advanced/ecs.html
-	if conf.ECS {
+	if conf.ECS.Enabled {
 		_, err = fmt.Fprintf(outputFile, `
 %s EDNS0 Client Subnet
 setECSSourcePrefixV4(%d)
 setECSSourcePrefixV6(%d)
 `,
 			OutputCommentPrefix,
-			conf.DefaultEcsPrefixV4,
-			conf.DefaultEcsPrefixV6,
+			conf.ECS.DefaultPrefixV4,
+			conf.ECS.DefaultPrefixV6,
 		)
 		check(err)
 	}

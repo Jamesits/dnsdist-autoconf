@@ -1,7 +1,7 @@
 # basic config
 
 # if an error is encountered, stop
-QuitOnError = false
+quit_on_error = false
 
 listen = [
     "0.0.0.0:53",
@@ -14,19 +14,23 @@ upstreams = [
     "202.141.162.123:53",
 ]
 
-#control_socket = "0.0.0.0"
-#control_socket_key = ""
-
-#webserver = "0.0.0.0:8083"
-#webserver_password = "passw0rd"
-
 # EDNS0 Client Subnet
-enable_ecs = true
-default_ecs_prefix_v4 = 24
-default_ecs_prefix_v6 = 48
+[ecs]
+enabled = true
+default_prefix_v4 = 24
+default_prefix_v6 = 48
 
 # set to true if you use Active Directory and allows DNS update
 allow_ddns_updates = false
+
+#[control_socket]
+#listen = "0.0.0.0"
+#key = ""
+
+#[web_server]
+#listen = "127.0.0.1:8083"
+#password = "supersecretpassword"
+#api_key = "supersecretAPIkey"
 
 # Rules
 
@@ -89,3 +93,9 @@ bootstrap_servers = [
 [[match]]
 provider = "ActiveDirectory"
 primary_domain = "corp.contoso.com"
+
+# example: if we cannot resolve that domain, it will be ignored by default with "quit_on_error" = false
+[[match]]
+provider = "ActiveDirectory"
+primary_domain = "non-existent-domain.example.com"
+bootstrap_server = "198.51.100.1:53"
