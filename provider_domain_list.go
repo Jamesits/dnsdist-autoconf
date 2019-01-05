@@ -14,5 +14,6 @@ func DomainList(c map[string]interface{}, o io.Writer) {
 			address: server,
 		})
 	}
-	generateServerPool(poolName, servers, emptyInterfaceToStringArray(c["domains"]), c["action"].(string), o)
+	generateServerPool(poolName, servers, o)
+	generateActions(poolName, emptyInterfaceToStringArray(c["domains"]), c["action"].(string), o)
 }

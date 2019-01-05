@@ -7,7 +7,7 @@ import (
 	"reflect"
 )
 
-const OutputCommentPrefix = "-- "
+const OutputCommentPrefix = "--"
 
 type Mode int
 
@@ -54,10 +54,7 @@ func emptyInterfaceToStringArray(i interface{}) []string {
 	return o
 }
 
-// function to generate a generic domain list / dns server config block
-func generateServerPool(pool string, servers []DnsServer, domains []string, action string, o io.Writer) {
-	var err error
-
+func generateServerPool(pool string, servers []DnsServer, o io.Writer) {
 	// create newServer() blocks
 	for _, server := range servers {
 		if len(server.name) > 0 {
@@ -78,6 +75,11 @@ func generateServerPool(pool string, servers []DnsServer, domains []string, acti
 		}
 	}
 
+}
+
+// function to generate a generic domain list / dns server config block
+func generateActions(pool string, domains []string, action string, o io.Writer) {
+	var err error
 	// create addAction() blocks
 	_, err = fmt.Fprint(o, "addAction({\n")
 	check(err)
