@@ -62,8 +62,8 @@ func main() {
 	if len(conf.ControlSocketListen) > 0 {
 		_, err = fmt.Fprintf(outputFile, `
 -- control socket
-controlSocket(\"%s\")
-setKey(\"%s\")
+controlSocket("%s")
+setKey("%s")
 `, conf.ControlSocketListen, conf.ControlSocketKey)
 		check(err)
 	}
@@ -72,7 +72,7 @@ setKey(\"%s\")
 	if len(conf.WebServerListen) > 0 {
 		_, err = fmt.Fprintf(outputFile, `
 -- web server
-webserver(\"%s\", \"%s\")
+webserver("%s", "%s")
 `, conf.WebServerListen, conf.WebServerPassword)
 		check(err)
 	}
