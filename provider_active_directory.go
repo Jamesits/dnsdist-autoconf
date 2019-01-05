@@ -12,22 +12,52 @@ import (
 // ActiveDirectory match list
 // automatic query DC IP address assuming all DC have DNS role configured
 func ActiveDirectory(c map[string]interface{}, o io.Writer) {
+	if !conf.AllowDDNSUpdates {
+		log.Println("Warning: if \"allow_ddns_updates\" is set to false, Active Directory DNS auto registration might not work.")
+	}
+
 	// prepare
 	ctx := context.Background()
 	primaryDomain := c["primary_domain"].(string)
 	var resolver *net.Resolver
+	var err error
 	log.Printf("Querying domain %s...\n", primaryDomain)
-	if val, ok := c["bootstrap_server"]; ok {
-		resolver = newCustomResolver(MODE_AUTO, val.(string))
-	} else {
-		resolver = newResolver()
-	}
 
 	// gather a list of DCs
 	// TODO: set current site name in config so we can query current site first
-	_, records, err := resolver.LookupSRV(ctx, "ldap", "tcp", primaryDomain)
-	if softFail(err) != nil {
-		return
+	var domain string
+	var records []*net.SRV
+	var bootstrapServers = emptyInterfaceToStringArray(c["bootstrap_servers"])
+
+	// try each pre-defined one
+	for _, server := range bootstrapServers {
+		log.Printf("Trying server %s...\n", server)
+		resolver = newCustomResolver(MODE_AUTO, server)
+		domain, records, err = resolver.LookupSRV(ctx, "ldap", "tcp", primaryDomain)
+		if softFail(err) != nil || len(records) == 0 {
+			log.Println("FAILED")
+			continue
+		} else {
+			log.Println("SUCCESS")
+			break
+		}
+	}
+
+	// try system server , if failed then softFail
+	if len(records) == 0 {
+		log.Println("Trying system DNS server...")
+		resolver = newResolver()
+		domain, records, err = resolver.LookupSRV(ctx, "ldap", "tcp", primaryDomain)
+		if softFail(err) != nil {
+			return
+		}
+	}
+
+	// if no valid SRV record is found, that's an error
+	if len(records) == 0 {
+		if softFail(fmt.Errorf("no valid SRV records for %s", domain)) != nil {
+			return
+		}
 	}
 
 	var servers []DnsServer
