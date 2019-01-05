@@ -10,5 +10,6 @@ type config struct {
 	ControlSocketKey    string                   `toml:"control_socket_key"`
 	WebServerListen     string                   `toml:"web_server"`
 	WebServerPassword   string                   `toml:"web_server_password"`
+	AllowDDNSUpdates    bool                     `toml:"allow_ddns_updates"`
 	Matches             []map[string]interface{} `toml:"match"`
 }

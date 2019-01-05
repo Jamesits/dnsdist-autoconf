@@ -1,10 +1,9 @@
 package main
 
+// const strings
+
 const globalConfigPrependString = `
 -- global static config start --
-
--- send statistics to PowerDNS metronome server
--- carbonServer("2001:888:2000:1d::2")
 
 -- fix up possibly badly truncated answers from pdns 2.9.22
 truncateTC(true)
@@ -13,7 +12,7 @@ truncateTC(true)
 -- the default being least outstanding queries
 -- setServerPolicy(roundrobin)
 
--- predefined IP masks --
+-- predefined IP masks
 
 -- All private IPs
 PrivateIPs = newNMG()
@@ -25,10 +24,7 @@ PrivateIPs:addMask("169.254.0.0/16")
 PrivateIPs:addMask("fc00::/7")
 PrivateIPs:addMask("fe80::/10")
 
--- block rules --
-
--- refuse all queries with the UPDATE opcode
-addAction(OpcodeRule(DNSOpcode.Update), RCodeAction(dnsdist.REFUSED))
+-- default block rules
 
 -- refuse all queries not having exactly one question
 addAction(NotRule(RecordsCountRule(DNSSection.Question, 1, 1)), RCodeAction(dnsdist.REFUSED))

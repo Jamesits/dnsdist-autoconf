@@ -97,10 +97,17 @@ func generateActions(pool string, domains []string, action string, o io.Writer) 
 	switch action {
 	case "resolve":
 		_, err = fmt.Fprintf(o, "PoolAction(\"%s\")", pool)
-		check(err)
+	case "servfail":
+		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.SERVFAIL)")
 	case "block":
+	case "nxdomain":
+		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.NXDOMAIN)")
+	case "refuse":
+		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.REFUSED)")
+	case "drop":
 		_, err = fmt.Fprint(o, "DropAction()")
 	}
+	check(err)
 
 	_, err = fmt.Fprint(o, ")\n")
 	check(err)

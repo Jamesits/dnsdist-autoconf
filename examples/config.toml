@@ -4,17 +4,28 @@ listen = [
     "0.0.0.0:53",
     "[::]:53",
 ]
+
+# default upstream
 upstreams = [
     "101.6.6.6:53",
     "202.141.162.123:53",
 ]
-control_socket = "0.0.0.0"
-control_socket_key = ""
-webserver = "0.0.0.0:8083"
-webserver_password = "passw0rd"
+
+#control_socket = "0.0.0.0"
+#control_socket_key = ""
+
+#webserver = "0.0.0.0:8083"
+#webserver_password = "passw0rd"
+
+# EDNS0 Client Subnet
 enable_ecs = true
 default_ecs_prefix_v4 = 24
 default_ecs_prefix_v6 = 48
+
+# set to true if you use Active Directory and allows DNS update
+allow_ddns_updates = false
+
+# Rules
 
 # you can include unlimited [[match]] blocks
 # but do not duplicate the same config
@@ -25,6 +36,9 @@ domains = [
     "music.httpdns.c.163.com",
 ]
 # note: "action" works in every [[match]] block. The default value is "resolve".
+#   "block" or "nxdomain" means return DNS NXDOMAIN.
+#   "refuse" means return DNS REFUSE.
+#   "drop" means packet getting dropped.
 action = "block"
 
 # example: resolve certain domain using other servers

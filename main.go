@@ -33,7 +33,7 @@ func main() {
 	_, err = toml.DecodeFile(*configPath, conf)
 	check(err)
 
-	// default
+	// normalize config and insert default value
 	if len(conf.Listen) == 0 {
 		conf.Listen = []string{"127.0.0.1:53", "[::1]:53"}
 	}
@@ -102,6 +102,15 @@ setECSSourcePrefixV6(%d)
 	check(err)
 	for _, addr := range conf.Upstreams {
 		_, err = fmt.Fprintf(outputFile, "newServer(\"%s\")\n", addr)
+		check(err)
+	}
+
+	// disable RFC2136 DNS update
+	if conf.AllowDDNSUpdates {
+		_, err = fmt.Fprintf(outputFile, `
+%s disallow RFC2136 DNS update
+addAction(OpcodeRule(DNSOpcode.Update), RCodeAction(dnsdist.REFUSED))
+`, OutputCommentPrefix)
 		check(err)
 	}
 
