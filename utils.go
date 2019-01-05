@@ -100,6 +100,7 @@ func generateActions(pool string, domains []string, action string, o io.Writer) 
 	case "servfail":
 		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.SERVFAIL)")
 	case "block":
+		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.NXDOMAIN)")
 	case "nxdomain":
 		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.NXDOMAIN)")
 	case "refuse":
