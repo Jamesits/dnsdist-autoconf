@@ -30,10 +30,18 @@ Warning, this configuration can use more than 1220 file descriptors, web server 
 You can increase this value by using LimitNOFILE= in the systemd unit file or ulimit.
 ```
 
-Quick fix:
+Quick fix if you are running directly in a shell:
 
-```
+```shell
 sudo su
 # ulimit -u unlimited
 # dnsdist -C dnsdist.conf
+```
+
+Fix if you are running in systemd:
+
+```shell
+mkdir -p /etc/systemd/system/dnsdist.service.d
+echo -e "[Service]\nLimitNOFILE=16384\n" > /etc/systemd/system/dnsdist.service.d/ulimit.conf
+systemctl daemon-reload
 ```
