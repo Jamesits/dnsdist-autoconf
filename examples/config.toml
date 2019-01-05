@@ -1,4 +1,4 @@
-# basic config
+# global config
 
 # if an error is encountered, stop
 quit_on_error = false
@@ -14,14 +14,14 @@ upstreams = [
     "202.141.162.123:53",
 ]
 
+# set to true if you use Active Directory and allows DNS update
+allow_ddns_updates = false
+
 # EDNS0 Client Subnet
 [ecs]
 enabled = true
 default_prefix_v4 = 24
 default_prefix_v6 = 48
-
-# set to true if you use Active Directory and allows DNS update
-allow_ddns_updates = false
 
 #[control_socket]
 #listen = "0.0.0.0"
