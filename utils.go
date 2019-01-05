@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"math/rand"
 	"reflect"
 )
 
@@ -22,24 +23,41 @@ type DnsServer struct {
 	name    string // for display purpose
 }
 
+// check every fucking err
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+// code from: https://stackoverflow.com/a/13906031
+func IsZeroOfUnderlyingType(x interface{}) bool {
+	return reflect.DeepEqual(x, reflect.Zero(reflect.TypeOf(x)).Interface())
+}
+
 // cursed type cast assuming every element inside is a string
 // code from: https://gist.github.com/pmn/5374494
 func emptyInterfaceToStringArray(i interface{}) []string {
 	var o []string
 
 	obj := reflect.ValueOf(i)
-	count := obj.Len()
-	for index := 0; index < count; index++ {
-		elem := obj.Index(index)
-		o = append(o, elem.Interface().(string))
+
+	// work around panic: reflect: call of reflect.Value.Len on zero Value
+	if !IsZeroOfUnderlyingType(obj) {
+		count := obj.Len()
+		for index := 0; index < count; index++ {
+			elem := obj.Index(index)
+			o = append(o, elem.Interface().(string))
+		}
 	}
 
 	return o
 }
 
 // function to generate a generic domain list / dns server config block
-func generateServerPool(pool string, servers []DnsServer, domains []string, o io.Writer) {
+func generateServerPool(pool string, servers []DnsServer, domains []string, action string, o io.Writer) {
 	var err error
+
 	// create newServer() blocks
 	for _, server := range servers {
 		if len(server.name) > 0 {
@@ -61,20 +79,38 @@ func generateServerPool(pool string, servers []DnsServer, domains []string, o io
 	}
 
 	// create addAction() blocks
-	_, err = fmt.Fprint(o, "addAction({")
+	_, err = fmt.Fprint(o, "addAction({\n")
 	check(err)
-	for _, domain := range domains {
-		_, err = fmt.Fprintf(
-			o,
-			"'%s', ",
-			domain,
-		)
+	for index, domain := range domains {
+		if index > 0 {
+			_, err = fmt.Fprint(o, ", \n")
+			check(err)
+		}
+		_, err = fmt.Fprintf(o, "    '%s'", domain)
 		check(err)
 	}
-	_, err = fmt.Fprintf(
-		o,
-		"}, PoolAction(\"%s\"))\n",
-		pool,
-	)
+	_, err = fmt.Fprint(o, "\n}, ")
 	check(err)
+
+	switch action {
+	case "resolve":
+		_, err = fmt.Fprintf(o, "PoolAction(\"%s\")", pool)
+		check(err)
+	case "block":
+		_, err = fmt.Fprint(o, "DropAction()")
+	}
+
+	_, err = fmt.Fprint(o, ")\n")
+	check(err)
+}
+
+const randomLetters = "0123456789ABCDEF"
+
+// generates a random string
+func randomString(n int) string {
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = randomLetters[rand.Intn(len(randomLetters))]
+	}
+	return string(b)
 }

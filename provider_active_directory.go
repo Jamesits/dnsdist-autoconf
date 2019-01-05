@@ -14,10 +14,10 @@ import (
 func ActiveDirectory(c map[string]interface{}, o io.Writer) {
 	// prepare
 	ctx := context.Background()
-	primary_domain := c["primary_domain"].(string)
+	primaryDomain := c["primary_domain"].(string)
 	var resolver *net.Resolver
-	log.Printf("Querying domain %s...\n", primary_domain)
-	if val, ok := c["bootstrap_servers"]; ok {
+	log.Printf("Querying domain %s...\n", primaryDomain)
+	if val, ok := c["bootstrap_server"]; ok {
 		resolver = newCustomResolver(MODE_AUTO, val.(string))
 	} else {
 		resolver = newResolver()
@@ -25,7 +25,7 @@ func ActiveDirectory(c map[string]interface{}, o io.Writer) {
 
 	// gather a list of DCs
 	// TODO: set current site name in config so we can query current site first
-	_, records, err := resolver.LookupSRV(ctx, "ldap", "tcp", primary_domain)
+	_, records, err := resolver.LookupSRV(ctx, "ldap", "tcp", primaryDomain)
 	check(err)
 
 	var servers []DnsServer
@@ -48,7 +48,6 @@ func ActiveDirectory(c map[string]interface{}, o io.Writer) {
 				// IPv4
 				addressWithPort = fmt.Sprintf("%s:53", address)
 			}
-
 			servers = append(servers, DnsServer{
 				name:    name,
 				address: addressWithPort,
@@ -57,14 +56,14 @@ func ActiveDirectory(c map[string]interface{}, o io.Writer) {
 
 	}
 
-	poolName := fmt.Sprintf("AD-%s", primary_domain)
+	poolName := fmt.Sprintf("AD-%s", primaryDomain)
 	var domains []string
 	if val, ok := c["domains"]; ok {
 		domains = emptyInterfaceToStringArray(val)
 	}
-	domains = append([]string{primary_domain}, domains...)
+	domains = append([]string{primaryDomain}, domains...)
 
-	generateServerPool(poolName, servers, domains, o)
+	generateServerPool(poolName, servers, domains, c["action"].(string), o)
 
 	// emptyInterfaceToStringArray(c["domains"])
 }
