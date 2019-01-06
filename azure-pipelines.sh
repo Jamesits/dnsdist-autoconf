@@ -29,6 +29,7 @@ function docker_build() {
 }
 
 install_deps
+go get ./...
 build linux amd64 linux-amd64
 # build windows amd64 windows-amd64.exe
 test_binary
