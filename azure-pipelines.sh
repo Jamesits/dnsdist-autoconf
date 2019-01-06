@@ -9,7 +9,7 @@ function build() {
 
 function install_deps() {
     # install master version of dnsdist
-    sudo curl https://repo.powerdns.com/CBC8B383-pub.asc -o /etc/apt/trusted.gpg.d/pdns.asc
+    curl https://repo.powerdns.com/CBC8B383-pub.asc | sudo apt-key add -
     sudo cp docker/dnsdist.perference /etc/apt/preferences.d/dnsdist
     sudo cp docker/pdns.list.xenial /etc/apt/sources.list.d/pdns.list
 
