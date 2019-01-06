@@ -15,7 +15,14 @@ upstreams = [
 ]
 
 allowed_client_subnets = [
+    # include localhost
+    "127.0.0.0/8",
+    "::1/128",
+
+    # include your LAN
     "192.168.1.0/24",
+
+    # everywhere - potentially unsafe, use with caution
     # "0.0.0.0/0",
     # "::/0",
 ]
