@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"strconv"
 	"strings"
 )
 
@@ -56,9 +57,14 @@ func generateDomainList(name string, domains []string, o io.Writer) string {
 func generateAction(pool string, domainList string, action string, o io.Writer) {
 	var err error
 
-	// SuffixMatchNodeRule(..., false) prevents all domains being displayed on the web page
+	hideDomainListOnWebPortal := false
+	if len(domainList) > 10 {
+		hideDomainListOnWebPortal = true
+	}
+
+	// SuffixMatchNodeRule(..., true) prevents all domains being displayed on the web page
 	// as per https://github.com/PowerDNS/pdns/issues/7332#issuecomment-451681228
-	_, err = fmt.Fprintf(o, "addAction(SuffixMatchNodeRule(%s, false), ", domainList)
+	_, err = fmt.Fprintf(o, "addAction(SuffixMatchNodeRule(%s, %s), ", domainList, strconv.FormatBool(hideDomainListOnWebPortal))
 	check(err)
 
 	switch strings.ToLower(action) {
