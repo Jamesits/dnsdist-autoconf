@@ -29,7 +29,7 @@ COPY docker/dnsdist.perference /etc/apt/preferences.d/dnsdist
 RUN curl https://repo.powerdns.com/FD380FBB-pub.asc -o /etc/apt/trusted.gpg.d/pdns.asc
 
 RUN apt-get update -y \
-	&& apt-get install -y --no-install-recommends dnsdist \
+	&& apt-get install -y --no-install-recommends git-core dnsdist \
 	&& apt-get clean -y \
 	&& rm -rf /var/lib/apt/lists/*
 
