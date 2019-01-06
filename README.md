@@ -4,7 +4,7 @@ Simple [dnsdist](https://dnsdist.org) config generator made for human.
 
 Prebuilt binaries might be found in [releases](https://github.com/Jamesits/dnsdist-autoconf/releases) or from the CI below.
 
-Integrated Docker image: [GitHub repo](https://github.com/Jamesits/docker-dnsdist-autoconf) && [Docker Cloud](https://cloud.docker.com/repository/docker/jamesits/dnsdist-autoconf)
+Integrated Docker image: [Docker Cloud](https://cloud.docker.com/repository/docker/jamesits/dnsdist-autoconf)
 
 [![Build Status](https://dev.azure.com/nekomimiswitch/General/_apis/build/status/dnsdist-autoconf?branchName=master)](https://dev.azure.com/nekomimiswitch/General/_build/latest?definitionId=39?branchName=master) [![](https://images.microbadger.com/badges/image/jamesits/dnsdist-autoconf.svg)](https://microbadger.com/images/jamesits/dnsdist-autoconf "Get your own image badge on microbadger.com")
 
