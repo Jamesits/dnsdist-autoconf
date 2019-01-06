@@ -24,7 +24,7 @@ RUN apt-get update -y \
     && apt-get install -y --no-install-recommends curl ca-certificates supervisor cron
 
 # add PowerDNS repo
-COPY docker/pdns.list /etc/apt/sources.list.d/pdns.list
+COPY docker/pdns.list.bionic /etc/apt/sources.list.d/pdns.list
 COPY docker/dnsdist.perference /etc/apt/preferences.d/dnsdist
 RUN curl https://repo.powerdns.com/CBC8B383-pub.asc -o /etc/apt/trusted.gpg.d/pdns.asc
 
