@@ -6,7 +6,7 @@ RUN apt-get update -y \
 	&& apt-get install -y golang-1.10-go upx-ucl
 
 WORKDIR /root/dnsdist-autoconf
-COPY *.go /root/dnsdist-autoconf
+COPY *.go /root/dnsdist-autoconf/
 
 ENV GOPATH=/tmp/go
 ENV GOBIN=/tmp/go/bin
@@ -26,7 +26,7 @@ RUN apt-get update -y \
 # add PowerDNS repo
 COPY docker/pdns.list.bionic /etc/apt/sources.list.d/pdns.list
 COPY docker/dnsdist.perference /etc/apt/preferences.d/dnsdist
-RUN curl https://repo.powerdns.com/CBC8B383-pub.asc -o /etc/apt/trusted.gpg.d/pdns.asc
+RUN curl https://repo.powerdns.com/FD380FBB-pub.asc -o /etc/apt/trusted.gpg.d/pdns.asc
 
 RUN apt-get update -y \
 	&& apt-get install -y --no-install-recommends dnsdist \

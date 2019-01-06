@@ -1,1 +1,1 @@
-deb [arch=amd64] http://repo.powerdns.com/ubuntu xenial-dnsdist-master main
+deb [arch=amd64] http://repo.powerdns.com/ubuntu xenial-dnsdist-13 main

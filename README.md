@@ -53,6 +53,10 @@ Use Go 1.10 or higher.
 
 ## Caveats
 
+### dnsdist version compatibility
+
+We only support dnsdist version 1.3 and later. Although there are some cases running dnsdist 1.2 with it, these cases will less likely be supported.
+
 ### Disable systemd-resolved
 
 `systemd-resolved` will take up port 53 on Ubuntu 17.04 onwards. To disable it:

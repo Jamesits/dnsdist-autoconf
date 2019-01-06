@@ -12,8 +12,9 @@ function build() {
 }
 
 function install_deps() {
+    echo "Installing dependencies"
     # install master version of dnsdist
-    curl https://repo.powerdns.com/CBC8B383-pub.asc | sudo apt-key add -
+    curl https://repo.powerdns.com/FD380FBB-pub.asc | sudo apt-key add -
     sudo cp docker/dnsdist.perference /etc/apt/preferences.d/dnsdist
     sudo cp docker/pdns.list.xenial /etc/apt/sources.list.d/pdns.list
 
@@ -22,6 +23,7 @@ function install_deps() {
 }
 
 function test_binary() {
+    echo "Testing binary"
     BINARY=${BUILD_ARTIFACTSTAGINGDIRECTORY}/dnsdist-autoconf-linux-amd64
     ${BINARY} -config examples/autoconf.toml -output /tmp/dnsdist.conf
     dnsdist -V
@@ -29,6 +31,7 @@ function test_binary() {
 }
 
 function docker_build() {
+    echo "Testing docker build"
     docker build . --tag jamesits/dnsdist-autoconf:azure-pipelines-latest
 }
 

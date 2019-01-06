@@ -1,1 +1,1 @@
-deb [arch=amd64] http://repo.powerdns.com/ubuntu bionic-dnsdist-master main
+deb [arch=amd64] http://repo.powerdns.com/ubuntu bionic-dnsdist-13 main
