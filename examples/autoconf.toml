@@ -14,19 +14,11 @@ upstreams = [
     "202.141.162.123:53",
 ]
 
-# default client subnets if this option is missing:
-# 127.0.0.0/8
-# 10.0.0.0/8
-# 100.64.0.0/10
-# 169.254.0.0/16
-# 192.168.0.0/16
-# 172.16.0.0/12
-# ::1/128
-# fc00::/7
-# fe80::/10
-#allowed_client_subnets = [
-#    "192.168.1.0/24"
-#]
+allowed_client_subnets = [
+    "192.168.1.0/24",
+    # "0.0.0.0/0",
+    # "::/0",
+]
 
 # set to true if you use Active Directory and allows DNS update
 allow_ddns_updates = false
