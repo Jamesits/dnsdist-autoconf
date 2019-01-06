@@ -45,7 +45,7 @@ func generateDomainList(name string, domains []string, o io.Writer) string {
 	check(err)
 
 	for _, domain := range domains {
-		_, err = fmt.Fprintf(o, "%s:add(\"%s\")\n", name, domain)
+		_, err = fmt.Fprintf(o, "%s:add(newDNSName(\"%s\"))\n", name, domain)
 		check(err)
 	}
 
