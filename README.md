@@ -4,7 +4,7 @@ Simple [dnsdist](https://dnsdist.org) config generator made for human.
 
 Prebuilt binaries might be found in [releases](https://github.com/Jamesits/dnsdist-autoconf/releases) or from the CI below.
 
-Integrated Docker image: [GitHub repo](https://github.com/Jamesits/docker-dnsdist-autoconf) [Docker Cloud](https://cloud.docker.com/repository/docker/jamesits/dnsdist-autoconf)
+Integrated Docker image: [GitHub repo](https://github.com/Jamesits/docker-dnsdist-autoconf) && [Docker Cloud](https://cloud.docker.com/repository/docker/jamesits/dnsdist-autoconf)
 
 [![Build Status](https://dev.azure.com/nekomimiswitch/General/_apis/build/status/dnsdist-autoconf?branchName=master)](https://dev.azure.com/nekomimiswitch/General/_build/latest?definitionId=39?branchName=master) [![](https://images.microbadger.com/badges/image/jamesits/dnsdist-autoconf.svg)](https://microbadger.com/images/jamesits/dnsdist-autoconf "Get your own image badge on microbadger.com")
 
@@ -16,22 +16,52 @@ Integrated Docker image: [GitHub repo](https://github.com/Jamesits/docker-dnsdis
 
 ## Usage
 
-An example config file is at [examples/config.toml](examples/config.toml).
+### [I Just Wanna Run](https://www.youtube.com/watch?v=HrWnfx8uRPw)
+
+An example config file is at [examples/autoconf.toml](examples/autoconf.toml).
 
 ```shell
 # generate the config
-dnsdist-autoconf -config config.toml -output dnsdist.conf
-# check the config grammar
+dnsdist-autoconf -config autoconf.toml -output dnsdist.conf
+# check the config grammar (important, since the author is not very confident)
 dnsdist -C dnsdist.conf --check-config
 # run it!
 dnsdist -C dnsdist.conf
 ```
 
+### Use Docker
+
+0. Make sure your current OS have good DNS (at least can connect to the Docker registry and let dnsdist-autoconf finish probing services).
+1. Put `dnsdist-autoconf.service` in this repo to `/usr/lib/systemd/system`.
+2. Put a [dnsdist-autoconf config toml file](examples/autoconf.toml) into `/etc/dnsdist`.
+3. Start (and optionally enable) the `dnsdist-autoconf.service` systemd unit.
+
+Example:
+
+```shell
+mkdir -p /usr/lib/systemd/system
+mkdir -p /etc/dnsdist
+wget https://github.com/Jamesits/docker-dnsdist-autoconf/raw/master/dnsdist-autoconf.service -O /usr/lib/systemd/system/dnsdist-autoconf.service
+wget https://github.com/Jamesits/dnsdist-autoconf/raw/master/examples/config.toml -O /etc/dnsdist/autoconf.toml
+systemctl daemon-reload
+systemctl enable --now dnsdist-autoconf.service
+```
+
 ## Building
 
-Use Go 1.11 or higher.
+Use Go 1.10 or higher.
 
 ## Caveats
+
+### Disable systemd-resolved
+
+`systemd-resolved` will take up port 53 on Ubuntu 17.04 onwards. To disable it:
+
+0. Make sure your hostname resolves in `/etc/hosts`
+1. If your `/etc/resolv.conf` is a symlink, delete it and recreate it, type in `nameserver 8.8.8.8` or any other working DNS server
+2. `systemctl disable --now systemd-resolved.service`
+3. `systemctl mask systemd-resolved.service`
+4. Config your DHCP client to use the appropriate DNS config. For example, if using NetworkManager, add `dns=default` under `[main]` section of `/etc/NetworkManager/NetworkManager.conf`.
 
 ### Active Directory
 

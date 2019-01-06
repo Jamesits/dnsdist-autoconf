@@ -23,6 +23,7 @@ func main() {
 	var err error
 	var configPath = flag.String("config", "config.toml", "config file")
 	var outputPath = flag.String("output", "-", "output file")
+	var isInsideDocker = flag.Bool("docker", false, "special treatment when running inside official docker container")
 	flag.Parse()
 
 	var outputFile = os.Stdout
@@ -50,6 +51,12 @@ func main() {
 	}
 	if conf.ECS.DefaultPrefixV6 == 0 {
 		conf.ECS.DefaultPrefixV6 = 48
+	}
+
+	// docker config
+	if *isInsideDocker {
+		conf.Listen = []string{"0.0.0.0:53", "[::]:53"}
+		conf.WebServer.Listen = "0.0.0.0:80"
 	}
 
 	// program identity

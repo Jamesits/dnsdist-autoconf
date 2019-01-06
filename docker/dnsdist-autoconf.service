@@ -1,0 +1,17 @@
+[Unit]
+Description=Auto configured DNS loadbalancer in Docker
+Requires=docker.service
+Conflicts=systemd-resolved.service,dnsdist.service
+
+[Service]
+ExecStartPre=/bin/sleep 1
+ExecStartPre=-/usr/bin/docker kill dnsdist-autoconf_1
+ExecStartPre=-/usr/bin/docker rm dnsdist-autoconf_1
+ExecStartPre=-/usr/bin/docker pull jamesits/dnsdist-autoconf:latest
+ExecStart=/usr/bin/docker run --rm --name=dnsdist-autoconf_1 -p=53:53/udp -p=53:53/tcp -p=8083:80/tcp -v=/etc/dnsdist:/etc/dnsdist jamesits/dnsdist-autoconf:latest
+ExecStop=/usr/bin/docker stop dnsdist-autoconf_1
+ExecReload=/usr/bin/docker restart dnsdist-autoconf_1
+TimeoutStartSec=infinity
+
+[Install]
+WantedBy=multi-user.target
