@@ -98,7 +98,7 @@ func ActiveDirectory(c map[string]interface{}, o io.Writer) {
 	domains = append([]string{primaryDomain}, domains...)
 
 	generateServerPool(poolName, servers, o)
-	generateActions(poolName, domains, c["action"].(string), o)
+	generateActionFromDomains(poolName, domains, c["action"].(string), o)
 
 	// emptyInterfaceToStringArray(c["domains"])
 }
