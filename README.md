@@ -29,20 +29,30 @@ dnsdist -C dnsdist.conf --check-config
 dnsdist -C dnsdist.conf
 ```
 
-### Use Docker
+### Use Docker (directly)
 
-0. Make sure your current OS have good DNS (at least can connect to the Docker registry and let dnsdist-autoconf finish probing services).
-1. Put `dnsdist-autoconf.service` in this repo to `/usr/lib/systemd/system`.
-2. Put a [dnsdist-autoconf config toml file](examples/autoconf.toml) into `/etc/dnsdist`.
-3. Start (and optionally enable) the `dnsdist-autoconf.service` systemd unit.
+0. Put a [dnsdist-autoconf config toml file](examples/autoconf.toml) into `/etc/dnsdist`
+1. Run an instance of `jamesits/dnsdist-autoconf:latest`
+
+```shell
+docker pull jamesits/dnsdist-autoconf:latest
+docker run --rm --name=dnsdist-autoconf_1 -p=53:53/udp -p=53:53/tcp -p=8083:80/tcp -v=/etc/dnsdist:/etc/dnsdist jamesits/dnsdist-autoconf:latest
+```
+
+### Use Docker (with systemd service)
+
+0. Make sure your current OS have good DNS (at least can connect to the Docker registry and let dnsdist-autoconf finish probing services)
+1. Put [`dnsdist-autoconf.service`](docker/dnsdist-autoconf.service) in this repo to `/usr/lib/systemd/system`
+2. Put a [dnsdist-autoconf config toml file](examples/autoconf.toml) into `/etc/dnsdist`
+3. Start (and optionally enable) the `dnsdist-autoconf.service` systemd unit
 
 Example:
 
 ```shell
 mkdir -p /usr/lib/systemd/system
 mkdir -p /etc/dnsdist
-wget https://github.com/Jamesits/docker-dnsdist-autoconf/raw/master/dnsdist-autoconf.service -O /usr/lib/systemd/system/dnsdist-autoconf.service
-wget https://github.com/Jamesits/dnsdist-autoconf/raw/master/examples/config.toml -O /etc/dnsdist/autoconf.toml
+wget https://github.com/Jamesits/dnsdist-autoconf/raw/master/docker/dnsdist-autoconf.service -O /usr/lib/systemd/system/dnsdist-autoconf.service
+wget https://github.com/Jamesits/dnsdist-autoconf/raw/master/examples/autoconf.toml -O /etc/dnsdist/autoconf.toml
 systemctl daemon-reload
 systemctl enable --now dnsdist-autoconf.service
 ```
@@ -71,7 +81,7 @@ We only support dnsdist version 1.3 and later. Although there are some cases run
 
 We make a simple assumption that every DC have DNS roles installed, since we can only get LDAP/Kerberos server list from DNS queries, and quering any other config requires much more complex protocols. 
 
-### ulimit
+### ulimit (Too many open files)
 
 The generated config might cause dnsdist to use a lot file descriptors.
 
