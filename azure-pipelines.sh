@@ -1,6 +1,10 @@
 #!/bin/bash
 set -eu
 
+export DEBIAN_FRONTEND=noninteractive
+export GOPATH=/tmp/go
+export GOBIN=/tmp/go/bin
+
 function build() {
     echo "Building for OS=$1 ARCH=$2"
     env GOOS="$1" GOARCH="$2" go build -ldflags="-s -w" -o ${BUILD_ARTIFACTSTAGINGDIRECTORY}/dnsdist-autoconf-"$3"
