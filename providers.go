@@ -11,3 +11,14 @@ var providers = map[string]MatchListProvider{
 	// "gfwlist":            GfwList,
 	"dnsmasq-china-list": DnsmasqChinaList,
 }
+
+// provide a convenient helper to generate the same set of config for a provider that:
+// * only generate a single pool
+// it currently does:
+// * assign an packet cache
+func generateDefaultProviderTasks(poolName string, c map[string]interface{}, o io.Writer) {
+	// cache
+	if conf.Cache.Enabled {
+		assignCache(poolName, globalPacketCache, o)
+	}
+}

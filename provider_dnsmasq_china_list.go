@@ -52,10 +52,7 @@ func DnsmasqChinaList(c map[string]interface{}, o io.Writer) {
 
 		generateActionFromDomains(poolName, domains, c["action"].(string), o)
 
-		// cache
-		if conf.Cache.Enabled {
-			assignCache(poolName, globalPacketCache, o)
-		}
+		generateDefaultProviderTasks(poolName, c, o)
 
 		log.Printf("Generated %d rules\n", len(domains))
 	}
