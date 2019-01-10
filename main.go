@@ -14,6 +14,7 @@ import (
 
 var conf *config
 var softErrorCount = 0
+var globalPacketCache string
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
@@ -51,6 +52,12 @@ func main() {
 	}
 	if conf.ECS.DefaultPrefixV6 == 0 {
 		conf.ECS.DefaultPrefixV6 = 48
+	}
+	if conf.Cache.MaxEntries == 0 {
+		conf.Cache.MaxEntries = 2048
+	}
+	if conf.Cache.MaxLifetime == 0 {
+		conf.Cache.MaxLifetime = 86400
 	}
 
 	// docker config
@@ -147,6 +154,16 @@ addAction(OpcodeRule(DNSOpcode.Update), RCodeAction(dnsdist.REFUSED))
 `, OutputCommentPrefix)
 		check(err)
 	}
+
+	// global cache
+	if conf.Cache.Enabled {
+		globalPacketCache = createCache("", conf.Cache, outputFile)
+		assignCache("", globalPacketCache, outputFile)
+	}
+
+	// matches
+	_, err = fmt.Fprint(outputFile, "\n\n")
+	check(err)
 
 	log.Printf("Match list count: %d", len(conf.Matches))
 	for index, m := range conf.Matches {

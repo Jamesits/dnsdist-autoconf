@@ -100,5 +100,10 @@ func ActiveDirectory(c map[string]interface{}, o io.Writer) {
 	generateServerPool(poolName, servers, o)
 	generateActionFromDomains(poolName, domains, c["action"].(string), o)
 
+	// cache
+	if conf.Cache.Enabled {
+		assignCache(poolName, globalPacketCache, o)
+	}
+
 	// emptyInterfaceToStringArray(c["domains"])
 }

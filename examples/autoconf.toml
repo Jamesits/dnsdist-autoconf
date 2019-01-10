@@ -45,6 +45,12 @@ default_prefix_v6 = 48
 #password = "supersecretpassword"
 #api_key = "supersecretAPIkey"
 
+# enable cache
+# note: it eats memory
+[cache]
+enabled = true
+max_entries = 16384
+
 # Rules
 
 # you can include unlimited [[match]] blocks

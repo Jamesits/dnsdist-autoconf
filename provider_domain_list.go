@@ -19,4 +19,9 @@ func DomainList(c map[string]interface{}, o io.Writer) {
 	generateServerPool(poolName, servers, o)
 	generateDomainList(domainListName, emptyInterfaceToStringArray(c["domains"]), o)
 	generateAction(poolName, domainListName, c["action"].(string), o)
+
+	// cache
+	if conf.Cache.Enabled {
+		assignCache(poolName, globalPacketCache, o)
+	}
 }

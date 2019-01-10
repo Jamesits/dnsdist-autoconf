@@ -95,3 +95,30 @@ func generateActionFromDomains(pool string, domains []string, action string, o i
 	// create addAction()
 	generateAction(pool, domainList, action, o)
 }
+
+// Create a packet cache
+// https://dnsdist.org/guides/cache.html
+func createCache(name string, cacheConfig cache, o io.Writer) string {
+	// if name is empty, generate a random name
+	if len(name) == 0 {
+		name = fmt.Sprintf("cache_%s", randomString(6))
+	}
+	_, err := fmt.Fprintf(o, "%s = newPacketCache(%d, %d, %d, %d, %d, %t)\n",
+		name,
+		cacheConfig.MaxEntries,
+		cacheConfig.MaxLifetime,
+		cacheConfig.MinTTL,
+		cacheConfig.FailureResultTTL,
+		cacheConfig.StaleResultTTL,
+		cacheConfig.AvoidReduceCachedEntriesTTL,
+	)
+	check(err)
+
+	return name
+}
+
+// Assign a packet cache to a pool
+func assignCache(poolName string, cacheName string, o io.Writer) {
+	_, err := fmt.Fprintf(o, "getPool(\"%s\"):setCache(%s)", poolName, cacheName)
+	check(err)
+}
