@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-func DomainList(c map[string]interface{}, o io.Writer) {
+func DomainList(index int, c map[string]interface{}, o io.Writer) {
 	randomSuffix := randomString(6)
 	poolName := fmt.Sprintf("DomainList-%s", randomSuffix)
 	domainListName := fmt.Sprintf("domain_list_%s", randomSuffix)
@@ -16,7 +16,8 @@ func DomainList(c map[string]interface{}, o io.Writer) {
 			address: server,
 		})
 	}
-	generateServerPool(poolName, servers, o)
+
+	generateServerPoolInline(poolName, servers, o)
 	generateDomainList(domainListName, emptyInterfaceToStringArray(c["domains"]), o)
 	generateAction(poolName, domainListName, c["action"].(string), o)
 

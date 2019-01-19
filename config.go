@@ -10,6 +10,7 @@ type config struct {
 	ControlSocket        controlSocket            `toml:"control_socket"`
 	WebServer            webServer                `toml:"web_server"`
 	Cache                cache                    `toml:"cache"`
+	Pools                []pool                   `toml:"pool"`
 	Matches              []map[string]interface{} `toml:"match"`
 }
 
@@ -38,4 +39,9 @@ type cache struct {
 	FailureResultTTL            int  `toml:"failure_result_ttl"`
 	StaleResultTTL              int  `toml:"stale_result_ttl"`
 	AvoidReduceCachedEntriesTTL bool `toml:"avoid_reduce_cached_entries_ttl"`
+}
+
+type pool struct {
+	Name    string   `toml:"name"`
+	Servers []string `toml:"servers"`
 }

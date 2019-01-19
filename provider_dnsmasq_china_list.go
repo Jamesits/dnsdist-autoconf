@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"strings"
 )
 
 // generate ruleset for https://github.com/felixonmars/dnsmasq-china-list
@@ -24,7 +22,7 @@ var localDomainListUrls = []string{
 	"https://github.com/felixonmars/dnsmasq-china-list/raw/master/google.china.conf",
 }
 
-func DnsmasqChinaList(c map[string]interface{}, o io.Writer) {
+func DnsmasqChinaList(index int, c map[string]interface{}, o io.Writer) {
 	var servers []DnsServer
 	const poolName = "dnsmasq-china-list"
 
@@ -33,7 +31,7 @@ func DnsmasqChinaList(c map[string]interface{}, o io.Writer) {
 			address: server,
 		})
 	}
-	generateServerPool(poolName, servers, o)
+	generateServerPoolInline(poolName, servers, o)
 
 	for _, url := range localDomainListUrls {
 		log.Printf("Downloading rule %s...\n", url)
@@ -56,29 +54,4 @@ func DnsmasqChinaList(c map[string]interface{}, o io.Writer) {
 
 		log.Printf("Generated %d rules\n", len(domains))
 	}
-}
-
-// generate a domain list from the following format:
-// server=/example.com/114.114.114.114
-// we are making a lot of assumptions here
-func generateDomainListFromDnsmasqConfig(i io.Reader) []string {
-	var o []string
-
-	scanner := bufio.NewScanner(i)
-	for scanner.Scan() {
-		// normalize
-		line := strings.ToLower(strings.TrimSpace(scanner.Text()))
-
-		if !strings.HasPrefix(line, "server=/") {
-			break
-		}
-
-		sp := strings.Split(line, "/")
-		if len(sp) < 3 {
-			break
-		}
-		o = append(o, sp[1])
-	}
-
-	return o
 }

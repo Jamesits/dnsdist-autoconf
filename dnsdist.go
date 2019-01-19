@@ -7,7 +7,8 @@ import (
 	"strings"
 )
 
-func generateServerPool(pool string, servers []DnsServer, o io.Writer) {
+// generate newServer() blocks from a servers=[] inside a [[match]]
+func generateServerPoolInline(pool string, servers []DnsServer, o io.Writer) {
 	// create newServer() blocks
 	for _, server := range servers {
 		if len(server.name) > 0 {
@@ -27,7 +28,18 @@ func generateServerPool(pool string, servers []DnsServer, o io.Writer) {
 			check(err)
 		}
 	}
+}
 
+// generate newServer() blocks from a [[pool]] definition
+func generateServerPool(pool pool, o io.Writer) {
+	for _, server := range pool.Servers {
+		_, err := fmt.Fprintf(
+			o, "newServer({address=\"%s\", pool=\"%s\"})\n",
+			server,
+			pool.Name,
+		)
+		check(err)
+	}
 }
 
 // generate a SuffixMatchNode
@@ -73,6 +85,7 @@ func generateAction(pool string, domainList string, action string, o io.Writer) 
 	case "servfail":
 		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.SERVFAIL)")
 	case "block":
+		// return NXDOMAIN so the request would be cached by client (thank @m13253)
 		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.NXDOMAIN)")
 	case "nxdomain":
 		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.NXDOMAIN)")

@@ -161,6 +161,17 @@ addAction(OpcodeRule(DNSOpcode.Update), RCodeAction(dnsdist.REFUSED))
 		assignCache("", globalPacketCache, outputFile)
 	}
 
+	// server pools
+	_, err = fmt.Fprint(outputFile, "\n\n")
+	check(err)
+
+	log.Printf("Pools count: %d", len(conf.Pools))
+	for index, m := range conf.Pools {
+		_, err = fmt.Fprintf(outputFile, "\n%s Pool #%d [%s]\n", OutputCommentPrefix, index+1, m.Name)
+		generateServerPool(m, outputFile)
+		_, err = fmt.Fprintf(outputFile, "\n%s end pool #%d [%s]\n\n", OutputCommentPrefix, index+1, m.Name)
+	}
+
 	// matches
 	_, err = fmt.Fprint(outputFile, "\n\n")
 	check(err)
@@ -187,7 +198,7 @@ addAction(OpcodeRule(DNSOpcode.Update), RCodeAction(dnsdist.REFUSED))
 				// got a match
 				log.Printf("Processing match #%d, type %s, action %s\n", index+1, key, m["action"])
 				found = true
-				value(m, &o)
+				value(index, m, &o)
 				_, err = fmt.Fprintf(outputFile, "\n%s match #%d [%s] -> %s\n", OutputCommentPrefix, index+1, m["provider"], m["action"])
 				check(err)
 				_, err = outputFile.WriteString(o.String())

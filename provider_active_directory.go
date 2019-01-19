@@ -11,7 +11,7 @@ import (
 
 // ActiveDirectory match list
 // automatic query DC IP address assuming all DC have DNS role configured
-func ActiveDirectory(c map[string]interface{}, o io.Writer) {
+func ActiveDirectory(index int, c map[string]interface{}, o io.Writer) {
 	if !conf.AllowDDNSUpdates {
 		log.Println("Warning: if \"allow_ddns_updates\" is set to false, Active Directory DNS auto registration might not work.")
 	}
@@ -97,7 +97,7 @@ func ActiveDirectory(c map[string]interface{}, o io.Writer) {
 	}
 	domains = append([]string{primaryDomain}, domains...)
 
-	generateServerPool(poolName, servers, o)
+	generateServerPoolInline(poolName, servers, o)
 	generateActionFromDomains(poolName, domains, c["action"].(string), o)
 
 	generateDefaultProviderTasks(poolName, c, o)

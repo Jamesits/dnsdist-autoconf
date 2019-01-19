@@ -2,7 +2,12 @@ package main
 
 import "io"
 
-type MatchListProvider func(map[string]interface{}, io.Writer)
+// Provider invocation function
+// args:
+// 	index int: a number that won't collide with other [[match]] blocks, can be used for naming
+// 	c map[string]interface{}: the user-supplied config
+//  o io.Writer: a binary buffer you should put your part of config to
+type MatchListProvider func(int, map[string]interface{}, io.Writer)
 
 // define a list of provider functions
 var providers = map[string]MatchListProvider{
