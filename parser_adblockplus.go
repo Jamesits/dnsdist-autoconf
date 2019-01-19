@@ -1,5 +1,11 @@
 package main
 
+// parse Adblock Plus rules into a domain list
+// supports exclusion, supports wildcard
+// doesn't support regex for now
+// documentation: https://adblockplus.org/filters
+// the documentation is not very clear on the syntax (no BNF, etc), lots of assumptions has been made
+
 import (
 	"bufio"
 	"github.com/asaskevich/govalidator"
@@ -8,6 +14,7 @@ import (
 	"strings"
 )
 
+// supported (safe to ignore) rule options
 var AdblockPlusRuleSupportedOptions = []string{
 	"third-party",
 }

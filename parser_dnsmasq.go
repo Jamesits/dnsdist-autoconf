@@ -1,6 +1,6 @@
 package main
 
-// provides parser for common file types
+// parse dnsmasq config file into a domain list
 
 import (
 	"bufio"
