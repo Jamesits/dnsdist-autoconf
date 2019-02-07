@@ -132,6 +132,6 @@ func createCache(name string, cacheConfig cache, o io.Writer) string {
 
 // Assign a packet cache to a pool
 func assignCache(poolName string, cacheName string, o io.Writer) {
-	_, err := fmt.Fprintf(o, "getPool(\"%s\"):setCache(%s)", poolName, cacheName)
+	_, err := fmt.Fprintf(o, "getPool(\"%s\"):setCache(%s)\n", poolName, cacheName)
 	check(err)
 }

@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/BurntSushi/toml"
+	"github.com/asaskevich/govalidator"
 	"log"
 	"math/rand"
 	"os"
@@ -159,6 +160,55 @@ addAction(OpcodeRule(DNSOpcode.Update), RCodeAction(dnsdist.REFUSED))
 	if conf.Cache.Enabled {
 		globalPacketCache = createCache("", conf.Cache, outputFile)
 		assignCache("", globalPacketCache, outputFile)
+	}
+
+	// hosts
+	log.Printf("Hosts count: %d", len(conf.ExplicitEntries))
+	_, err = fmt.Fprintf(outputFile, "\n\n%s Hosts\n", OutputCommentPrefix)
+	check(err)
+	for key, value := range conf.ExplicitEntries {
+		var v []string
+		switch t := value.(type) {
+		case []interface{}:
+			v = emptyInterfaceToStringArray(value)
+		case string:
+			v = []string{value.(string)}
+		default:
+			e := fmt.Errorf("unknown hosts value type %s", t)
+			softFail(e)
+			continue
+		}
+
+		isCname := false
+
+		for _, val := range v {
+			if !govalidator.IsIP(val) {
+				if isCname {
+					// error: multiple CNAME entries
+					e := fmt.Errorf("multiple CNAME entries for host %s", key)
+					softFail(e)
+				} else {
+					isCname = true
+				}
+			}
+		}
+
+		if isCname {
+			_, err = fmt.Fprintf(outputFile, "addAction(\"%s\", SpoofCNAMEAction(\"%s\"))\n\n", key, v[0])
+			check(err)
+		} else {
+			// we need to go through key, v here
+			_, err = fmt.Fprintf(outputFile, "addAction(\"%s\", SpoofAction({\n", key)
+			check(err)
+
+			for _, dst := range v {
+				_, err = fmt.Fprintf(outputFile, "\t\"%s\",\n", dst)
+				check(err)
+			}
+
+			_, err = fmt.Fprintf(outputFile, "}))\n\n")
+			check(err)
+		}
 	}
 
 	// server pools

@@ -10,6 +10,7 @@ type config struct {
 	ControlSocket        controlSocket            `toml:"control_socket"`
 	WebServer            webServer                `toml:"web_server"`
 	Cache                cache                    `toml:"cache"`
+	ExplicitEntries      map[string]interface{}   `toml:"hosts"`
 	Pools                []pool                   `toml:"pool"`
 	Matches              []map[string]interface{} `toml:"match"`
 }

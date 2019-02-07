@@ -51,6 +51,23 @@ default_prefix_v6 = 48
 enabled = true
 max_entries = 16384
 
+# hosts
+# remember to add quotation marks!
+[hosts]
+
+# you can use either an array of IP addresses
+"localhost.example.org" = [
+    "127.0.0.1",
+    "::1",
+]
+
+# or a single IP address
+"localhost6.example.org" = "::1"
+
+# or a CNAME
+"cname.example.org" = "example.org"
+
+
 # Rules
 
 # you can include unlimited [[match]] blocks
