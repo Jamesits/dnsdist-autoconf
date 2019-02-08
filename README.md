@@ -29,7 +29,13 @@ dnsdist -C dnsdist.conf --check-config
 dnsdist -C dnsdist.conf
 ```
 
-### Use Docker (directly)
+### Use Hosted Dnsdist in Docker
+
+The docker image will rerun `dnsdist-autoconf` every night to update dynamic config.
+
+Set `REMOTE_CONFIG` and `autoconf.toml` will be updated too.
+
+#### Option 1: directly run the docker image
 
 0. Put a [dnsdist-autoconf config toml file](examples/autoconf.toml) into `/etc/dnsdist`
 1. Run an instance of `jamesits/dnsdist-autoconf:latest`
@@ -39,7 +45,7 @@ docker pull jamesits/dnsdist-autoconf:latest
 docker run --rm --name=dnsdist-autoconf_1 -p=53:53/udp -p=53:53/tcp -p=8083:80/tcp -v=/etc/dnsdist:/etc/dnsdist jamesits/dnsdist-autoconf:latest
 ```
 
-### Use Docker (with systemd service)
+#### Option 2: manage it with systemd
 
 0. Make sure your current OS have good DNS (at least can connect to the Docker registry and let dnsdist-autoconf finish probing services)
 1. Put [`dnsdist-autoconf.service`](docker/dnsdist-autoconf.service) in this repo to `/usr/lib/systemd/system`
