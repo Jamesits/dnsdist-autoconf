@@ -8,9 +8,9 @@ const globalConfigPrependString = `
 -- fix up possibly badly truncated answers from pdns 2.9.22
 truncateTC(true)
 
--- switch the server balancing policy to round robin,
--- the default being least outstanding queries
--- setServerPolicy(roundrobin)
+-- the default is leastOutstanding, which part of ignores the "order" of the server
+setServerPolicy(firstAvailable)
+setServFailWhenNoServer(true)
 
 -- predefined IP masks
 
