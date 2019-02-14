@@ -80,13 +80,15 @@ func generateAction(pool string, domainList string, action string, o io.Writer) 
 	check(err)
 
 	switch strings.ToLower(action) {
+	case "resolv": // compatibility
+		fallthrough
 	case "resolve":
 		_, err = fmt.Fprintf(o, "PoolAction(\"%s\")", pool)
 	case "servfail":
 		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.SERVFAIL)")
 	case "block":
 		// return NXDOMAIN so the request would be cached by client (thank @m13253)
-		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.NXDOMAIN)")
+		fallthrough
 	case "nxdomain":
 		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.NXDOMAIN)")
 	case "refuse":
