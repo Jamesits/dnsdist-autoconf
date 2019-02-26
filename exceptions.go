@@ -2,7 +2,7 @@ package main
 
 import "log"
 
-// legacy funcion to check every fucking err
+// legacy function to check every fucking err
 func check(e error) {
 	if e != nil {
 		panic(e)
