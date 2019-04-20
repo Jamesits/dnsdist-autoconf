@@ -27,7 +27,7 @@ PrivateIPs:addMask("fe80::/10")
 -- default block rules
 
 -- refuse all queries not having exactly one question
-addAction(NotRule(RecordsCountRule(DNSSection.Question, 1, 1)), RCodeAction(dnsdist.REFUSED))
+addAction(NotRule(RecordsCountRule(DNSSection.Question, 1, 1)), RCodeAction(DNSRCode.REFUSED))
 
 -- global static config end --
 

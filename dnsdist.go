@@ -85,14 +85,14 @@ func generateAction(pool string, domainList string, action string, o io.Writer) 
 	case "resolve":
 		_, err = fmt.Fprintf(o, "PoolAction(\"%s\")", pool)
 	case "servfail":
-		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.SERVFAIL)")
+		_, err = fmt.Fprint(o, "RCodeAction(DNSRCode.SERVFAIL)")
 	case "block":
 		// return NXDOMAIN so the request would be cached by client (thank @m13253)
 		fallthrough
 	case "nxdomain":
-		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.NXDOMAIN)")
+		_, err = fmt.Fprint(o, "RCodeAction(DNSRCode.NXDOMAIN)")
 	case "refuse":
-		_, err = fmt.Fprint(o, "RCodeAction(dnsdist.REFUSED)")
+		_, err = fmt.Fprint(o, "RCodeAction(DNSRCode.REFUSED)")
 	case "drop":
 		_, err = fmt.Fprint(o, "DropAction()")
 	}

@@ -71,7 +71,7 @@ Use Go 1.10 or higher.
 
 ### dnsdist version compatibility
 
-We only support dnsdist version 1.3 and later. Although there are some cases running dnsdist 1.2 with it, these cases will less likely be supported.
+We only support dnsdist version 1.4 and later. Although there are some cases running dnsdist <1.4 with it, these cases will less likely be supported.
 
 ### Disable systemd-resolved
 
