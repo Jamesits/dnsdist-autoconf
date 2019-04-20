@@ -3,7 +3,7 @@ FROM ubuntu:18.10 as builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y \
-	&& apt-get install -y git-core golang-1.10-go upx-ucl
+	&& apt-get install -y git-core golang-1.10-go
 
 WORKDIR /root/dnsdist-autoconf
 COPY *.go /root/dnsdist-autoconf/
@@ -11,8 +11,7 @@ COPY *.go /root/dnsdist-autoconf/
 ENV GOPATH=/tmp/go
 ENV GOBIN=/tmp/go/bin
 RUN /usr/lib/go-1.10/bin/go get ./... \
-    && /usr/lib/go-1.10/bin/go build -ldflags="-s -w" -o dnsdist-autoconf \
-    && upx --ultra-brute dnsdist-autoconf
+    && /usr/lib/go-1.10/bin/go build -ldflags="-s -w" -o dnsdist-autoconf
 
 # production stage
 FROM ubuntu:18.04
