@@ -118,14 +118,13 @@ func createCache(name string, cacheConfig cache, o io.Writer) string {
 	if len(name) == 0 {
 		name = fmt.Sprintf("cache_%s", randomString(6))
 	}
-	_, err := fmt.Fprintf(o, "%s = newPacketCache(%d, %d, %d, %d, %d, %t)\n",
+	_, err := fmt.Fprintf(o, "%s = newPacketCache(%d,{maxTTL=%d, minTTL=%d, temporaryFailureTTL=%d, staleTTL=%d})\n",
 		name,
 		cacheConfig.MaxEntries,
 		cacheConfig.MaxLifetime,
 		cacheConfig.MinTTL,
 		cacheConfig.FailureResultTTL,
 		cacheConfig.StaleResultTTL,
-		cacheConfig.AvoidReduceCachedEntriesTTL,
 	)
 	check(err)
 

@@ -33,13 +33,12 @@ type webServer struct {
 }
 
 type cache struct {
-	Enabled                     bool `toml:"enabled"`
-	MaxEntries                  int  `toml:"max_entries"`
-	MaxLifetime                 int  `toml:"max_lifetime"`
-	MinTTL                      int  `toml:"min_ttl"`
-	FailureResultTTL            int  `toml:"failure_result_ttl"`
-	StaleResultTTL              int  `toml:"stale_result_ttl"`
-	AvoidReduceCachedEntriesTTL bool `toml:"avoid_reduce_cached_entries_ttl"`
+	Enabled          bool `toml:"enabled"`
+	MaxEntries       int  `toml:"max_entries"`
+	MaxLifetime      int  `toml:"max_lifetime"`
+	MinTTL           int  `toml:"min_ttl"`
+	FailureResultTTL int  `toml:"failure_result_ttl"`
+	StaleResultTTL   int  `toml:"stale_result_ttl"`
 }
 
 type pool struct {
