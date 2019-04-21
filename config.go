@@ -19,6 +19,7 @@ type ecs struct {
 	Enabled         bool `toml:"enabled"`
 	DefaultPrefixV4 int  `toml:"default_prefix_v4"`
 	DefaultPrefixV6 int  `toml:"default_prefix_v6"`
+	KeepPrivateIp   bool `toml:"keep_private_ip"`
 }
 
 type controlSocket struct {

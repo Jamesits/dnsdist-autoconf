@@ -35,6 +35,8 @@ allow_ddns_updates = false
 enabled = true
 default_prefix_v4 = 24
 default_prefix_v6 = 48
+# if DNS request source IP is not a public routable IP, still forward its ECS information to upstream
+keep_private_ip = false
 
 #[control_socket]
 #listen = "0.0.0.0"

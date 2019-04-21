@@ -139,6 +139,15 @@ setECSSourcePrefixV6(%d)
 		check(err)
 	}
 
+	if conf.ECS.KeepPrivateIp == false {
+		_, err = fmt.Fprint(outputFile, `
+-- remove ECS information if it is from private IP
+-- currently if can only match source IP, not the ECS ip
+addAction(NetmaskGroupRule(PrivateIPs, true), DisableECSAction())
+`)
+		check(err)
+	}
+
 	// default DNS servers
 	_, err = fmt.Fprintf(outputFile, "\n%s default upstream\n", OutputCommentPrefix)
 	check(err)
