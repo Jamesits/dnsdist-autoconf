@@ -151,10 +151,13 @@ addAction(NetmaskGroupRule(PrivateIPs, true), DisableECSAction())
 	// default DNS servers
 	_, err = fmt.Fprintf(outputFile, "\n%s default upstream\n", OutputCommentPrefix)
 	check(err)
+	var defaultPool []DnsServer
 	for _, addr := range conf.Upstreams {
-		_, err = fmt.Fprintf(outputFile, "newServer(\"%s\")\n", addr)
-		check(err)
+		defaultPool = append(defaultPool, DnsServer{
+			address: addr,
+		})
 	}
+	generateServerPoolInline("", defaultPool, outputFile)
 
 	// disable RFC2136 DNS update
 	if !conf.AllowDDNSUpdates {
