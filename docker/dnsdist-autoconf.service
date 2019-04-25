@@ -8,6 +8,7 @@ ExecStartPre=/bin/sleep 1
 ExecStartPre=-/usr/bin/docker kill dnsdist-autoconf_1
 ExecStartPre=-/usr/bin/docker rm dnsdist-autoconf_1
 ExecStartPre=-/usr/bin/docker pull jamesits/dnsdist-autoconf:latest
+# if you need to explicitly set dns for bootstrapping, use `--dns=1.1.1.1 --dns=8.8.8.8`
 ExecStart=/usr/bin/docker run --rm --name=dnsdist-autoconf_1 -p=53:53/udp -p=53:53/tcp -p=8083:80/tcp -v=/etc/dnsdist:/etc/dnsdist jamesits/dnsdist-autoconf:latest
 ExecStop=/usr/bin/docker stop dnsdist-autoconf_1
 ExecReload=/usr/bin/docker restart dnsdist-autoconf_1
