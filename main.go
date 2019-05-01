@@ -166,7 +166,7 @@ addAction(NetmaskGroupRule(PrivateIPs, true), DisableECSAction())
 	if !conf.AllowDDNSUpdates {
 		_, err = fmt.Fprintf(outputFile, `
 %s disallow RFC2136 DNS update
-addAction(OpcodeRule(DNSOpcode.Update), RCodeAction(dnsdist.REFUSED))
+addAction(OpcodeRule(DNSOpcode.Update), RCodeAction(DNSRCode.REFUSED))
 `, OutputCommentPrefix)
 		check(err)
 	}
