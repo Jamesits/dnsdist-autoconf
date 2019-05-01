@@ -30,6 +30,9 @@ allowed_client_subnets = [
 # set to true if you use Active Directory and allows DNS update
 allow_ddns_updates = false
 
+# interval to query upstream to check health
+health_check_interval = 600
+
 # EDNS0 Client Subnet
 [ecs]
 enabled = true

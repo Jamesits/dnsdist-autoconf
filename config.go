@@ -13,6 +13,7 @@ type config struct {
 	ExplicitEntries      map[string]interface{}   `toml:"hosts"`
 	Pools                []pool                   `toml:"pool"`
 	Matches              []map[string]interface{} `toml:"match"`
+	HealthCheckInterval  int                      `toml:"health_check_interval"`
 }
 
 type ecs struct {

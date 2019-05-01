@@ -13,19 +13,21 @@ func generateServerPoolInline(pool string, servers []DnsServer, o io.Writer) {
 	for _, server := range servers {
 		if len(server.name) > 0 {
 			_, err := fmt.Fprintf(
-				o, "newServer({address=\"%s\", name=\"%s\", pool=\"%s\", useClientSubnet=%t})\n",
+				o, "newServer({address=\"%s\", name=\"%s\", pool=\"%s\", useClientSubnet=%t, checkInterval=%d})\n",
 				server.address,
 				server.name,
 				pool,
 				conf.ECS.Enabled,
+				conf.HealthCheckInterval,
 			)
 			check(err)
 		} else {
 			_, err := fmt.Fprintf(
-				o, "newServer({address=\"%s\", pool=\"%s\", useClientSubnet=%t})\n",
+				o, "newServer({address=\"%s\", pool=\"%s\", useClientSubnet=%t, checkInterval=%d})\n",
 				server.address,
 				pool,
 				conf.ECS.Enabled,
+				conf.HealthCheckInterval,
 			)
 			check(err)
 		}
@@ -36,10 +38,11 @@ func generateServerPoolInline(pool string, servers []DnsServer, o io.Writer) {
 func generateServerPool(pool pool, o io.Writer) {
 	for _, server := range pool.Servers {
 		_, err := fmt.Fprintf(
-			o, "newServer({address=\"%s\", pool=\"%s\", useClientSubnet=%t})\n",
+			o, "newServer({address=\"%s\", pool=\"%s\", useClientSubnet=%t, checkInterval=%d})\n",
 			server,
 			pool.Name,
 			conf.ECS.Enabled,
+			conf.HealthCheckInterval,
 		)
 		check(err)
 	}

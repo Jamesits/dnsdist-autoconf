@@ -48,6 +48,9 @@ func main() {
 	if len(conf.Listen) == 0 {
 		conf.Listen = []string{"127.0.0.1:53", "[::1]:53"}
 	}
+	if conf.HealthCheckInterval == 0 {
+		conf.HealthCheckInterval = 600
+	}
 	if conf.ECS.DefaultPrefixV4 == 0 {
 		conf.ECS.DefaultPrefixV4 = 24
 	}
