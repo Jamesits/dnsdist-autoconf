@@ -9,7 +9,7 @@ const globalConfigPrependString = `
 truncateTC(true)
 
 -- the default is leastOutstanding, which part of ignores the "order" of the server
-setServerPolicy(firstAvailable)
+-- setServerPolicy(firstAvailable)
 setServFailWhenNoServer(true)
 
 -- predefined IP masks

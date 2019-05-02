@@ -7,6 +7,14 @@ import (
 	"strings"
 )
 
+func setServerPolicy(policy string, o io.Writer) {
+	_, err := fmt.Fprintf(
+		o, "\nsetServerPolicy(%s)\n",
+		policy,
+	)
+	check(err)
+}
+
 // generate newServer() blocks from a servers=[] inside a [[match]]
 func generateServerPoolInline(pool string, servers []DnsServer, o io.Writer) {
 	// create newServer() blocks

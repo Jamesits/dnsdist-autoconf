@@ -14,6 +14,7 @@ type config struct {
 	Pools                []pool                   `toml:"pool"`
 	Matches              []map[string]interface{} `toml:"match"`
 	HealthCheckInterval  int                      `toml:"health_check_interval"`
+	LoadBalancePolicy    string                   `toml:"load_balance_policy"`
 }
 
 type ecs struct {

@@ -33,6 +33,12 @@ allow_ddns_updates = false
 # interval to query upstream to check health
 health_check_interval = 600
 
+# load balance policy
+# valid values see https://dnsdist.org/guides/serverselection.html
+# default: firstAvailable
+load_balance_policy = "leastOutstanding"
+
+
 # EDNS0 Client Subnet
 [ecs]
 enabled = true

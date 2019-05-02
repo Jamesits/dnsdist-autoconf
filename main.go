@@ -63,6 +63,9 @@ func main() {
 	if conf.Cache.MaxLifetime == 0 {
 		conf.Cache.MaxLifetime = 86400
 	}
+	if len(conf.LoadBalancePolicy) == 0 {
+		conf.LoadBalancePolicy = "firstAvailable"
+	}
 
 	// docker config
 	if *isInsideDocker {
@@ -127,6 +130,9 @@ func main() {
 	}
 	_, err = fmt.Fprint(outputFile, "\n})\n")
 	check(err)
+
+	// Load balance policy
+	setServerPolicy(conf.LoadBalancePolicy, outputFile)
 
 	// ECS https://dnsdist.org/advanced/ecs.html
 	if conf.ECS.Enabled {
