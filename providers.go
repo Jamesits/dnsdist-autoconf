@@ -15,7 +15,7 @@ var providers = map[string]MatchListProvider{
 	"ActiveDirectory": ActiveDirectory,
 	// "gfwlist":            GfwList,
 	"dnsmasq-china-list": DnsmasqChinaList,
-	"DomainListUrl":      DomainListUrl,
+	// "DomainListUrl":      DomainListUrl,
 }
 
 // provide a convenient helper to generate the same set of config for a provider that:
