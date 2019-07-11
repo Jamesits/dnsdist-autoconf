@@ -168,7 +168,9 @@ addAction(NetmaskGroupRule(PrivateIPs, true), DisableECSAction())
 	}
 	generateServerPoolInline("", defaultPool, outputFile)
 
-	if len(conf.BackupUpstreams) > 0 {
+	var useBackupPool = len(conf.BackupUpstreams) > 0
+
+	if useBackupPool {
 		_, err = fmt.Fprintf(outputFile, "\n%s backup default upstream\n", OutputCommentPrefix)
 		check(err)
 		var backupDefaultPool []DnsServer
@@ -179,10 +181,7 @@ addAction(NetmaskGroupRule(PrivateIPs, true), DisableECSAction())
 		}
 		generateServerPoolInline("default_backup", backupDefaultPool, outputFile)
 
-		_, err = fmt.Fprintf(outputFile, `
-addAction(PoolAvailableRule(""), PoolAction("default_backup"))
-`)
-		check(err)
+		// just generate pool config now; rules are at the end
 	}
 
 	// disable RFC2136 DNS update
@@ -301,6 +300,16 @@ addAction(OpcodeRule(DNSOpcode.Update), RCodeAction(DNSRCode.REFUSED))
 			log.Fatalf("Unknown provider %s at match #%d\n", m["provider"], index+1)
 		}
 
+	}
+
+	if useBackupPool {
+		// if default pool is available, use default pool
+		// else catch all to fallback pool
+		_, err = fmt.Fprintf(outputFile, `
+addAction(PoolAvailableRule(""), PoolAction(""))
+addAction(AllRule(), PoolAction("default_backup"))
+`)
+		check(err)
 	}
 
 	if softErrorCount == 0 {
