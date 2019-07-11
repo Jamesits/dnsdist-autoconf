@@ -168,6 +168,23 @@ addAction(NetmaskGroupRule(PrivateIPs, true), DisableECSAction())
 	}
 	generateServerPoolInline("", defaultPool, outputFile)
 
+	if len(conf.BackupUpstreams) > 0 {
+		_, err = fmt.Fprintf(outputFile, "\n%s backup default upstream\n", OutputCommentPrefix)
+		check(err)
+		var backupDefaultPool []DnsServer
+		for _, addr := range conf.BackupUpstreams {
+			backupDefaultPool = append(backupDefaultPool, DnsServer{
+				address: addr,
+			})
+		}
+		generateServerPoolInline("default_backup", backupDefaultPool, outputFile)
+
+		_, err = fmt.Fprintf(outputFile, `
+addAction(PoolAvailableRule(""), PoolAction("default_backup"))
+`)
+		check(err)
+	}
+
 	// disable RFC2136 DNS update
 	if !conf.AllowDDNSUpdates {
 		_, err = fmt.Fprintf(outputFile, `
