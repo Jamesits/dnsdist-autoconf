@@ -96,7 +96,7 @@ func generateDomainList(name string, domains []string, o io.Writer) string {
 		check(err)
 	}
 
-	_, err = fmt.Fprintf(o, "for line in io.lines(\"%s\") do %s:add(line) end\n", fullPath, name)
+	_, err = fmt.Fprintf(o, "for line in io.lines(\"%s\") do %s:add(newDNSName(line)) end\n", fullPath, name)
 	check(err)
 
 	return name
