@@ -54,4 +54,4 @@ COPY examples/autoconf.toml /etc/dnsdist/autoconf.toml
 EXPOSE 53/udp 53/tcp 80/tcp
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
-HEALTHCHECK --start-period=1m --interval=30s --timeout=10s --retries=3 CMD /usr/local/bin/healthcheck.sh
+HEALTHCHECK --start-period=30s --interval=30s --timeout=10s --retries=3 CMD /usr/local/bin/healthcheck.sh
