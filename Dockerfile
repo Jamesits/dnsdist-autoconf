@@ -35,9 +35,7 @@ RUN apt-get update -y \
 # copy executables
 RUN mkdir -p /usr/local/bin
 COPY --from=builder /root/dnsdist-autoconf/dnsdist-autoconf /usr/local/bin/
-COPY docker/docker-entrypoint.sh /usr/local/bin/
-COPY docker/reload.sh /usr/local/bin/
-COPY docker/update-remote-config.sh /usr/local/bin/
+COPY docker/*.sh /usr/local/bin/
 # for Windows filesystem compatibility, set executable flag
 RUN chmod +x /usr/local/bin/*
 
@@ -56,3 +54,4 @@ COPY examples/autoconf.toml /etc/dnsdist/autoconf.toml
 EXPOSE 53/udp 53/tcp 80/tcp
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+HEALTHCHECK --start-period=1m --interval=30s --timeout=10s --retries=3 CMD /usr/local/bin/healthcheck.sh
