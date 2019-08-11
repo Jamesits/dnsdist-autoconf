@@ -50,11 +50,11 @@ func DnsmasqChinaList(index int, c map[string]interface{}, o io.Writer) {
 
 		generateActionFromDomains(fmt.Sprintf("%s-%d", poolName, index), poolName, domains, c["action"].(string), o)
 
-		generateDefaultProviderTasks(poolName, c, o)
-
 		_, err = fmt.Fprintf(o, "\n")
 		check(err)
 
 		log.Printf("Generated %d rules\n", len(domains))
 	}
+
+	generateDefaultProviderTasks(poolName, c, o)
 }
