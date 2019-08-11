@@ -1,20 +1,20 @@
 # build stage
-FROM ubuntu:18.10 as builder
+FROM ubuntu:19.04 as builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y \
-	&& apt-get install -y git-core golang-1.10-go
+	&& apt-get install -y git-core golang-go
 
 WORKDIR /root/dnsdist-autoconf
 COPY *.go /root/dnsdist-autoconf/
 
 ENV GOPATH=/tmp/go
 ENV GOBIN=/tmp/go/bin
-RUN /usr/lib/go-1.10/bin/go get ./... \
-    && /usr/lib/go-1.10/bin/go build -ldflags="-s -w" -o dnsdist-autoconf
+RUN /usr/bin/go get ./... \
+    && /usr/bin/go build -ldflags="-s -w" -o dnsdist-autoconf
 
 # production stage
-FROM ubuntu:18.04
+FROM debian:10-slim
 LABEL maintainer="docker@public.swineson.me"
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -23,7 +23,7 @@ RUN apt-get update -y \
     && apt-get install -y --no-install-recommends curl ca-certificates supervisor cron
 
 # add PowerDNS repo
-COPY docker/pdns.list.bionic /etc/apt/sources.list.d/pdns.list
+COPY docker/pdns.list.buster /etc/apt/sources.list.d/pdns.list
 COPY docker/dnsdist.perference /etc/apt/preferences.d/dnsdist
 RUN curl https://repo.powerdns.com/FD380FBB-pub.asc -o /etc/apt/trusted.gpg.d/pdns.asc
 
