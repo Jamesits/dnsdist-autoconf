@@ -120,9 +120,9 @@ func generateAction(pool string, domainList string, action string, o io.Writer) 
 }
 
 // function to generate a generic domain list / dns server config block
-func generateActionFromDomains(pool string, domains []string, action string, o io.Writer) {
+func generateActionFromDomains(domainListName string, pool string, domains []string, action string, o io.Writer) {
 	// create SuffixMatchNode
-	domainList := generateDomainList(stringToIdentifier(pool, 32), domains, o)
+	domainList := generateDomainList(stringToIdentifier(domainListName, 32), domains, o)
 
 	// create addAction()
 	generateAction(pool, domainList, action, o)

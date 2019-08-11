@@ -98,7 +98,7 @@ func ActiveDirectory(index int, c map[string]interface{}, o io.Writer) {
 	domains = append([]string{primaryDomain}, domains...)
 
 	generateServerPoolInline(poolName, servers, o)
-	generateActionFromDomains(poolName, domains, c["action"].(string), o)
+	generateActionFromDomains(poolName, poolName, domains, c["action"].(string), o)
 
 	generateDefaultProviderTasks(poolName, c, o)
 

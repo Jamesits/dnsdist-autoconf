@@ -33,7 +33,7 @@ func DnsmasqChinaList(index int, c map[string]interface{}, o io.Writer) {
 	}
 	generateServerPoolInline(poolName, servers, o)
 
-	for _, url := range localDomainListUrls {
+	for index, url := range localDomainListUrls {
 		log.Printf("Downloading rule %s...\n", url)
 
 		resp, err := http.Get(url)
@@ -48,9 +48,12 @@ func DnsmasqChinaList(index int, c map[string]interface{}, o io.Writer) {
 		_, err = fmt.Fprintf(o, "%s Domain list generated from %s\n", OutputCommentPrefix, url)
 		check(err)
 
-		generateActionFromDomains(poolName, domains, c["action"].(string), o)
+		generateActionFromDomains(fmt.Sprintf("%s-%d", poolName, index), poolName, domains, c["action"].(string), o)
 
 		generateDefaultProviderTasks(poolName, c, o)
+
+		_, err = fmt.Fprintf(o, "\n")
+		check(err)
 
 		log.Printf("Generated %d rules\n", len(domains))
 	}
