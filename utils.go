@@ -1,11 +1,14 @@
 package main
 
 import (
+	"crypto/md5"
+	"fmt"
 	"io"
 	"math/rand"
 	"os"
 	"path"
 	"reflect"
+	"regexp"
 )
 
 const OutputCommentPrefix = "--"
@@ -83,4 +86,23 @@ func getFileHandle(n string) (io.WriteCloser, string) {
 	check(err)
 
 	return outputFile, fullPath
+}
+
+func hashString(s string, len int) string {
+	h := md5.New()
+	_, err := io.WriteString(h, s)
+	check(err)
+	var out string
+	out = fmt.Sprintf("%x", h.Sum(nil))
+
+	return out[0:len]
+}
+
+func stringToIdentifier(s string, maxLen int) string {
+	re := regexp.MustCompile(`[^0-9a-zA-Z]`)
+	out := re.ReplaceAllString(s, `_`)
+	if len(out) <= maxLen {
+		return out
+	}
+	return out[0:maxLen]
 }

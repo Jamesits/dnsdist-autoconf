@@ -57,27 +57,7 @@ func generateServerPool(pool pool, o io.Writer) {
 }
 
 // generate a SuffixMatchNode
-// template from https://github.com/PowerDNS/pdns/issues/5433#issuecomment-309860659
-// TODO: for large list, we can possibly load it from external text files, like
-//		for line in io.lines("/etc/dnsdist/domains.txt") do auto_domain_list_x:add(line) end
 // TODO: filter name so it can be a valid Lua variable name
-//func generateDomainList(name string, domains []string, o io.Writer) string {
-//	var err error
-//	// if name is empty, generate a random name
-//	if len(name) == 0 {
-//		name = fmt.Sprintf("auto_domain_list_%s", randomString(6))
-//	}
-//
-//	_, err = fmt.Fprintf(o, "%s = newSuffixMatchNode()\n", name)
-//	check(err)
-//
-//	for _, domain := range domains {
-//		_, err = fmt.Fprintf(o, "%s:add(newDNSName(\"%s\"))\n", name, domain)
-//		check(err)
-//	}
-//
-//	return name
-//}
 func generateDomainList(name string, domains []string, o io.Writer) string {
 	var err error
 	// if name is empty, generate a random name
@@ -142,7 +122,7 @@ func generateAction(pool string, domainList string, action string, o io.Writer) 
 // function to generate a generic domain list / dns server config block
 func generateActionFromDomains(pool string, domains []string, action string, o io.Writer) {
 	// create SuffixMatchNode
-	domainList := generateDomainList("", domains, o)
+	domainList := generateDomainList(stringToIdentifier(pool, 32), domains, o)
 
 	// create addAction()
 	generateAction(pool, domainList, action, o)
