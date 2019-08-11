@@ -25,9 +25,9 @@ function install_deps() {
 function test_binary() {
     echo "Testing binary"
     BINARY=${BUILD_ARTIFACTSTAGINGDIRECTORY}/dnsdist-autoconf-linux-amd64
-    ${BINARY} -config examples/autoconf.toml -output /tmp/dnsdist.conf
+    ${BINARY} -config examples
     dnsdist -V
-    dnsdist --supervised --disable-syslog -C /tmp/dnsdist.conf --check-config
+    dnsdist --supervised --disable-syslog -C examples/dnsdist.conf --check-config
 }
 
 function docker_build() {
