@@ -20,7 +20,7 @@ LABEL maintainer="docker@public.swineson.me"
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends curl ca-certificates supervisor cron
+    && apt-get install -y --no-install-recommends curl ca-certificates supervisor cron dnsutils
 
 # add PowerDNS repo
 COPY docker/pdns.list.buster /etc/apt/sources.list.d/pdns.list

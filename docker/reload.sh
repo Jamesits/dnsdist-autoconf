@@ -8,5 +8,5 @@ dnsdist-autoconf -config /etc/dnsdist -docker
 if dnsdist --check-config; then
     supervisorctl restart dnsdist
 else
-    echo "Something happened, unable to parse auto-generated config file."
+    >&2 echo "Something happened, unable to parse auto-generated config file."
 fi
