@@ -4,7 +4,7 @@ Simple [dnsdist](https://dnsdist.org) config generator made for human.
 
 Prebuilt binaries might be found in [releases](https://github.com/Jamesits/dnsdist-autoconf/releases) or from the CI below.
 
-Integrated Docker image: [Docker Cloud](https://cloud.docker.com/repository/docker/jamesits/dnsdist-autoconf)
+Integrated Docker image: [Docker Hub](https://hub.docker.com/r/jamesits/dnsdist-autoconf)
 
 [![Build Status](https://dev.azure.com/nekomimiswitch/General/_apis/build/status/dnsdist-autoconf?branchName=master)](https://dev.azure.com/nekomimiswitch/General/_build/latest?definitionId=39?branchName=master) [![](https://images.microbadger.com/badges/image/jamesits/dnsdist-autoconf.svg)](https://microbadger.com/images/jamesits/dnsdist-autoconf "Get your own image badge on microbadger.com")
 
@@ -18,11 +18,11 @@ Integrated Docker image: [Docker Cloud](https://cloud.docker.com/repository/dock
 
 ### [I Just Wanna Run](https://www.youtube.com/watch?v=HrWnfx8uRPw)
 
-An example config file is at [examples/autoconf.toml](examples/autoconf.toml).
+An example config file is at [examples/autoconf.toml](examples/autoconf.toml). `dnsdist-autoconf` will search for a `autoconf.toml` file under the config folder.
 
 ```shell
 # generate the config
-dnsdist-autoconf -config autoconf.toml -output dnsdist.conf
+dnsdist-autoconf -config .
 # check the config grammar (important, since the author is not very confident)
 dnsdist -C dnsdist.conf --check-config
 # run it!
@@ -42,7 +42,7 @@ Set `REMOTE_CONFIG` and `autoconf.toml` will be updated too.
 
 ```shell
 docker pull jamesits/dnsdist-autoconf:latest
-docker run --rm --name=dnsdist-autoconf_1 -p=53:53/udp -p=53:53/tcp -p=8083:80/tcp -v=/etc/dnsdist:/etc/dnsdist jamesits/dnsdist-autoconf:latest
+docker run --rm --name=dnsdist-autoconf_1 -p=53:53/udp -p=53:53/tcp -p=8083:80/tcp --dns=1.1.1.1 --dns=8.8.8.8 -v=/etc/dnsdist:/etc/dnsdist jamesits/dnsdist-autoconf:latest
 ```
 
 #### Option 2: manage it with systemd
