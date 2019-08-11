@@ -9,6 +9,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"path"
 	"strings"
 	"time"
 )
@@ -16,6 +17,7 @@ import (
 var conf *config
 var softErrorCount = 0
 var globalPacketCache string
+var configDir *string
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
@@ -23,20 +25,17 @@ func init() {
 
 func main() {
 	var err error
-	var configPath = flag.String("config", "config.toml", "config file")
-	var outputPath = flag.String("output", "-", "output file")
+	configDir = flag.String("config", "/etc/dnsdist", "config directory")
 	var isInsideDocker = flag.Bool("docker", false, "special treatment when running inside official docker container")
 	flag.Parse()
 
-	var outputFile = os.Stdout
-	if *outputPath != "-" {
-		outputFile, err = os.Create(*outputPath)
-		check(err)
-		defer outputFile.Close()
-	}
+	var configPath = path.Join(*configDir, "autoconf.toml")
+	outputFile, err := os.Create(path.Join(*configDir, "dnsdist.conf"))
+	check(err)
+	defer outputFile.Close()
 
 	conf = &config{}
-	metaData, err := toml.DecodeFile(*configPath, conf)
+	metaData, err := toml.DecodeFile(configPath, conf)
 	check(err)
 
 	// print unknown configs

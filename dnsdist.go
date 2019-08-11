@@ -61,6 +61,23 @@ func generateServerPool(pool pool, o io.Writer) {
 // TODO: for large list, we can possibly load it from external text files, like
 //		for line in io.lines("/etc/dnsdist/domains.txt") do auto_domain_list_x:add(line) end
 // TODO: filter name so it can be a valid Lua variable name
+//func generateDomainList(name string, domains []string, o io.Writer) string {
+//	var err error
+//	// if name is empty, generate a random name
+//	if len(name) == 0 {
+//		name = fmt.Sprintf("auto_domain_list_%s", randomString(6))
+//	}
+//
+//	_, err = fmt.Fprintf(o, "%s = newSuffixMatchNode()\n", name)
+//	check(err)
+//
+//	for _, domain := range domains {
+//		_, err = fmt.Fprintf(o, "%s:add(newDNSName(\"%s\"))\n", name, domain)
+//		check(err)
+//	}
+//
+//	return name
+//}
 func generateDomainList(name string, domains []string, o io.Writer) string {
 	var err error
 	// if name is empty, generate a random name
@@ -71,10 +88,16 @@ func generateDomainList(name string, domains []string, o io.Writer) string {
 	_, err = fmt.Fprintf(o, "%s = newSuffixMatchNode()\n", name)
 	check(err)
 
+	listFile, fullPath := getFileHandle(name + ".list")
+	defer listFile.Close()
+
 	for _, domain := range domains {
-		_, err = fmt.Fprintf(o, "%s:add(newDNSName(\"%s\"))\n", name, domain)
+		_, err = fmt.Fprintln(listFile, domain)
 		check(err)
 	}
+
+	_, err = fmt.Fprintf(o, "for line in io.lines(\"%s\") do %s:add(line) end\n", fullPath, name)
+	check(err)
 
 	return name
 }

@@ -1,7 +1,10 @@
 package main
 
 import (
+	"io"
 	"math/rand"
+	"os"
+	"path"
 	"reflect"
 )
 
@@ -72,4 +75,12 @@ func reverse(s []string) []string {
 		s[i], s[j] = s[j], s[i]
 	}
 	return s
+}
+
+func getFileHandle(n string) (io.WriteCloser, string) {
+	fullPath := path.Join(*configDir, n)
+	outputFile, err := os.Create(fullPath)
+	check(err)
+
+	return outputFile, fullPath
 }
