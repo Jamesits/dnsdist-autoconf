@@ -42,10 +42,12 @@ func DnsmasqChinaList(index int, c map[string]interface{}, o io.Writer) {
 		if softFail(err) != nil {
 			continue
 		}
-		defer resp.Body.Close()
 
 		domains := generateDomainListFromDnsmasqConfig(resp.Body)
 		_, err = fmt.Fprintf(o, "%s Domain list generated from %s\n", OutputCommentPrefix, url)
+		check(err)
+
+		err = resp.Body.Close()
 		check(err)
 
 		generateActionFromDomains(fmt.Sprintf("%s-%d", poolName, index), poolName, domains, c["action"].(string), o)
